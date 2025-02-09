@@ -1,5 +1,5 @@
 ---
-name: "⚠️ BugFix"
+name: BugFix
 about: 오류 해결 과정 기록
 title: ''
 labels: ''

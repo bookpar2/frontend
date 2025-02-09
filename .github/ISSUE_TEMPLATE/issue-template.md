@@ -1,5 +1,5 @@
 ---
-name: "\b\U0001F4CC Issue Template"
+name: Issue Template
 about: 이슈 생성 템플릿
 title: ''
 labels: ''
