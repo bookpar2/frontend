@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-10">
       <h1 className="text-2xl font-bold mb-8">로그인</h1>
       <form onSubmit={handleLogin} className="w-full max-w-sm">
         {/* 이메일 입력 */}
