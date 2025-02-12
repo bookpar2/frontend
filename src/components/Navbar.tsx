@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Header: React.FC = () => {
+const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -57,4 +57,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default Navbar;
