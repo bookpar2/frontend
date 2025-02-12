@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home: React.FC = () => {
+const MainPage: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* 배너 */}
@@ -18,4 +18,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default MainPage;
