@@ -1,11 +1,8 @@
 import React from 'react';
-import Header from '../components/Header';
 
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen">
-      {/* 헤더 */}
-      <Header />
       {/* 배너 */}
       <section className="w-full bg-secondary">
         <div className="w-full max-w-screen-lg mx-auto">
