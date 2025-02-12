@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center relative">
+    <header className="fixed top-0 z-[60] w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center">
       <Link to="/" className="text-xl font-bold text-purple-600">
         <img src="/images/logo.svg" alt="Logo" className="h-10" />
       </Link>
