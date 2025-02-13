@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border-error' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border-error' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
           />
           {errorMessage && !validateEmail(email) && (
             <p className="text-error text-sm mt-2">{errorMessage}</p>
@@ -75,10 +75,10 @@ const Login: React.FC = () => {
 
       {/* 회원가입 안내 */}
       <p className="mt-8 text-gray-600">
-        회원이 아니신가요? <a href="/signup" className="text-primary hover:underline">회원가입</a>
+        회원이 아니신가요? <a href="/register" className="text-primary hover:underline">회원가입</a>
       </p>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
