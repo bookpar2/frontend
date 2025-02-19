@@ -10,13 +10,13 @@ const Navbar: React.FC = () => {
   return (
     <header className="fixed top-0 z-[60] w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center">
       <Link to="/">
-        <img src="/images/logo.svg" alt="Logo" className="h-8 pl-1" />
+        <img src="/images/logo.svg" alt="Logo" className="h-8 pl-1 select-none" />
       </Link>
       
       {/* Desktop Navigation */}
       <nav className="hidden md:flex">
-        <Link to="/" className={`px-4 py-2 ${isActive('/') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
-          구매하기
+        <Link to="/sell" className={`px-4 py-2 ${isActive('/sell') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+          판매하기
         </Link>
         <Link to="/login" className={`px-4 py-2 ${isActive('/login') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
           로그인
@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
       </nav>
       
       {/* Mobile Menu */}
-      <div className="md:hidden flex space-x-4 items-center">
+      <div className="md:hidden flex space-x-2 items-center">
         {/* 검색 아이콘 */}
         <Link to="/">
           <img src="/images/search.svg" alt="Search" className="w-6 h-6" />
@@ -49,6 +49,17 @@ const Navbar: React.FC = () => {
                 onClick={() => setMenuOpen(false)}
               >
                 구매하기
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/sell"
+                className={`block px-4 py-2 ${
+                  isActive('/sell')? 'text-primary font-bold' : 'text-gray-700'
+                } hover:bg-gray-100`}
+                onClick={() => setMenuOpen(false)}
+              >
+                판매하기
               </Link>
             </li>
             <li>
