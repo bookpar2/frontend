@@ -76,17 +76,6 @@ function Navbar() {
             <ul className="flex flex-col">
               <li>
                 <Link
-                  to="/"
-                  className={`block px-4 py-2 ${
-                    isActive('/') ? 'text-primary font-bold' : 'text-gray-700'
-                  } hover:bg-gray-100`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  구매하기
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/sell"
                   className={`block px-4 py-2 ${
                     isActive('/sell') ? 'text-primary font-bold' : 'text-gray-700'
