@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const RegisterPage: React.FC = () => {
+function RegisterPage() {
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [email, setEmail] = useState('');

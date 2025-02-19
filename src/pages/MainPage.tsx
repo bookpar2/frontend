@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import usePostsStore from '../stores/usePostsStore';
 import PostCard from '../components/PostCard';
 
-const MainPage: React.FC = () => {
+function MainPage() {
   const { books, fetchBooks, loading, error } = usePostsStore();
 
   useEffect(() => {

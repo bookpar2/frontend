@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Upload } from "lucide-react";
 
-const SellPage: React.FC = () => {
+function SellPage() {
   const [images, setImages] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
