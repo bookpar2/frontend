@@ -31,7 +31,7 @@ const SellPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 space-y-4 pt-28 sm:pt-40">
+    <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
       <div>
         <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장)</label>
         <div className="flex gap-2">
@@ -51,19 +51,35 @@ const SellPage: React.FC = () => {
       
       <div>
         <label className="block text-sm font-medium pl-1 pb-1">책 제목</label>
-        <input type="text" placeholder="책 제목을 입력하세요" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-3 border rounded-md" />
+        <input
+          type="text"
+          placeholder="책 제목을 입력하세요"
+          value={title} onChange={(e) => setTitle(e.target.value)}
+          className={`w-full p-3 border rounded-md ${error.title ? "border-error" : "border-gray-300"}`}
+        />
         {error.title && <p className="text-error text-sm mt-1 pl-1">{error.title}</p>}
       </div>
       
       <div>
         <label className="block text-sm font-medium pl-1 pb-1">가격</label>
-        <input type="number" placeholder="가격을 입력하세요" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full border rounded-md p-3" />
+        <input
+          type="number"
+          placeholder="가격을 입력하세요"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className={`w-full p-3 border rounded-md ${error.price ? "border-error" : "border-gray-300"}`}
+        />
         {error.price && <p className="text-error text-sm mt-1 pl-1">{error.price}</p>}
       </div>
       
       <div>
         <label className="block text-sm font-medium pl-1 pb-1">상태 설명</label>
-        <textarea placeholder="책의 상태를 설명해 주세요(중고 여부, 필기 여부 등)" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full h-48 p-3 border rounded-md resize-none" />
+        <textarea 
+          placeholder="책의 상태를 설명해 주세요(중고 여부, 필기 여부 등)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className={`w-full h-48 p-3 border rounded-md resize-none ${error.description ? "border-error" : "border-gray-300"}`}
+        />
         {error.description && <p className="text-error text-sm pl-1">{error.description}</p>}
       </div>
       
