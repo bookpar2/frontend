@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Navbar: React.FC = () => {
+function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 

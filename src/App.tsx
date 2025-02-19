@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
@@ -7,7 +6,7 @@ import RegisterPage from './pages/RegisterPage';
 import SellPage from './pages/SellPage';
 import DetailPage from './pages/DetailPage';
 
-const App: React.FC = () => {
+function App() {
   return (
     <Router>
       <div className="w-full min-w-[375px] min-h-screen overflow-x-hidden">

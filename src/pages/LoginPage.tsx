@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LoginPage: React.FC = () => {
+function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
