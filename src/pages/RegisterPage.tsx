@@ -52,7 +52,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center items-center bg-gray-50 px-10 mt-16">
+    <div className="w-full min-h-screen flex flex-col items-center px-10 pt-40 sm:pt-56">
       <h1 className="text-2xl font-bold mb-8">회원가입</h1>
       <form onSubmit={handleRegister} className="w-full max-w-sm">
         {/* 이름 입력 */}
