@@ -4,6 +4,7 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import Navbar from './components/Navbar';
 import RegisterPage from './pages/RegisterPage';
+import SellPage from './pages/SellPage';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
             <Route path="/" element={<MainPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/sell" element={<SellPage />} />
           </>
         </Routes>
       </div>
