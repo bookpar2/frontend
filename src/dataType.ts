@@ -1,23 +1,28 @@
 export interface Book {
-  book_id: number;
+  book_id: number; 
   imageUrls: string[];
   title: string;
   price: number;
-  saleStatus: string;
+  saleStatus: boolean;
+  description: string;
+  seller: string;
 }
 
 export interface PostsState {
   books: Book[];
   fetchBooks: () => Promise<void>;
+  loading: boolean;
+  error: string | null;
 }
 
 export interface SalesStatusProps {
-  salesStatus: boolean;
+  saleStatus: boolean;
 }
 
 export interface PostCardProps {
-  id: number;
+  book_id: number;
   title: string;
-  price: string;
-  salesStatus: boolean;
+  price: number;
+  saleStatus: boolean;
+  imageUrls: string[];
 }
