@@ -12,7 +12,7 @@ function DetailPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-28 pb-8">
+    <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-24 pb-8">
       <div>
         <div className="aspect-square bg-blue-100 p-6 rounded-lg text-center">
           <img src={`${book.imageUrls}`} />
