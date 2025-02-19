@@ -16,6 +16,7 @@ export interface SalesStatusProps {
 }
 
 export interface PostCardProps {
+  id: number;
   title: string;
   price: string;
   salesStatus: boolean;

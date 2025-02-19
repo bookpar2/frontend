@@ -29,7 +29,7 @@ const MainPage: React.FC = () => {
         ) : (
           <div className="px-3 my-0 mt-2 grid w-full max-w-[1024px] grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-6 text-left justify-items-center">
             {books.map((book) => (
-              <PostCard key={book.id} title={book.title} price={book.price} salesStatus={book.salesStatus} />
+              <PostCard id={book.id} title={book.title} price={book.price} salesStatus={book.salesStatus} />
             ))}
           </div>
         )}
