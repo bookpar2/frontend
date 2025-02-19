@@ -9,10 +9,22 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="fixed top-0 z-[60] w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center">
-      <Link to="/" className="text-xl font-bold text-purple-600">
-        <img src="/images/logo.svg" alt="Logo" className="h-10" />
+      <Link to="/">
+        <img src="/images/logo.svg" alt="Logo" className="h-8 pl-1" />
       </Link>
-      <div className="flex space-x-4 items-center">
+      
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex">
+        <Link to="/" className={`px-4 py-2 ${isActive('/') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+          구매하기
+        </Link>
+        <Link to="/login" className={`px-4 py-2 ${isActive('/login') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+          로그인
+        </Link>
+      </nav>
+      
+      {/* Mobile Menu */}
+      <div className="md:hidden flex space-x-4 items-center">
         {/* 검색 아이콘 */}
         <Link to="/">
           <img src="/images/search.svg" alt="Search" className="w-6 h-6" />
@@ -24,15 +36,15 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* 메뉴 */}
+      {/* Dropdown Menu */}
       {menuOpen && (
-        <div className="absolute top-16 right-6 w-48 bg-white shadow-lg border rounded-lg z-10">
+        <div className="absolute top-16 right-6 w-48 bg-white shadow-lg border rounded-lg z-10 md:hidden">
           <ul className="flex flex-col">
             <li>
               <Link
                 to="/"
                 className={`block px-4 py-2 ${
-                  isActive('/') ? 'text-blue-600' : 'text-gray-700'
+                  isActive('/') ? 'text-primary font-bold' : 'text-gray-700'
                 } hover:bg-gray-100`}
                 onClick={() => setMenuOpen(false)}
               >
@@ -43,7 +55,7 @@ const Navbar: React.FC = () => {
               <Link
                 to="/login"
                 className={`block px-4 py-2 ${
-                  isActive('/login') ? 'text-blue-600 font-bold' : 'text-gray-700'
+                  isActive('/login') ? 'text-primary font-bold' : 'text-gray-700'
                 } hover:bg-gray-100`}
                 onClick={() => setMenuOpen(false)}
               >
