@@ -7,7 +7,7 @@ function PostCard(props: PostCardProps) {
 
   return (
     <div 
-      className="p-4 w-full overflow-hidden hover:cursor-pointer md:w-56 bg-secondary rounded-md flex flex-col items-center"
+      className="p-4 w-full overflow-hidden hover:cursor-pointer max-w-56 bg-secondary rounded-md flex flex-col items-center"
       onClick={() => navigate(`/detail/${props.book_id}`)}
     >
       {/* 책 이미지 */}
