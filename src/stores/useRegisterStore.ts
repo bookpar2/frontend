@@ -38,7 +38,8 @@ const useRegisterStore = create<RegisterState>((set) => ({
         email: school_email,
         major,
         studentId: student_id,
-        token: access, // 액세스 토큰 저장
+        refresh: refresh,
+        access: access
       });
 
       // 토큰 로컬 스토리지 저장

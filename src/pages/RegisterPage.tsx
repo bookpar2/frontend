@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import api from "../baseURL/baseURL"; // Axios 인스턴스 가져오기
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [studentId, setStudentId] = useState("");
   const [major, setMajor] = useState("");
@@ -166,15 +168,8 @@ function RegisterPage() {
           verification_code: verificationCode,
         });
 
-        // 응답에서 JWT 토큰 저장
-        const { access, refresh } = response.data;
-
-        // 로컬 스토리지에 토큰 저장
-        localStorage.setItem("token", access);
-        localStorage.setItem("refreshToken", refresh);
-
         alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-        window.location.href = "/login"; // 로그인 페이지로 이동
+        navigate("/login"); // 로그인 페이지로 이동
 
       } catch (error: any) {
         console.error("회원가입 오류:", error.response?.data);
