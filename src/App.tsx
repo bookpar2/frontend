@@ -10,7 +10,7 @@ import useUserStore from './stores/useUserStore';
 import { ReactNode } from 'react';
 
 interface ProtectedRouteProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 // 로그인 상태를 체크하는 ProtectedRoute 컴포넌트
@@ -32,16 +32,9 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-          {/* 로그인시에만 접근 가능 */}
-          <Route 
-            path="/register"
-            element={
-              <ProtectedRoute>
-                <RegisterPage />
-              </ProtectedRoute>
-            } 
-          />
+          {/* 로그인한 사용자만 접근 가능 */}
           <Route
             path="/sell"
             element={
@@ -51,7 +44,7 @@ function App() {
             }
           />
           <Route
-            path="/detail/:book_id" 
+            path="/detail/:book_id"
             element={
               <ProtectedRoute>
                 <DetailPage />
@@ -64,12 +57,12 @@ function App() {
               <ProtectedRoute>
                 <MyPage />
               </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </div>
     </Router>
   );
-};
+}
 
 export default App;
