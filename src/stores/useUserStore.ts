@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 
-export type UserState = {
-  isLoggedIn: boolean;
-  email: string;
-  id: number;
-  name: string;
-  studentId: string;
-  setUser: (user: Omit<UserState, 'setUser'>) => void;
+interface UserState {
+  name: string | null;
+  email: string | null;
+  major: string | null;
+  studentId: string | null;
+  token: string | null;
+  isLoggedIn: boolean; // 로그인 여부 확인
+  setUser: (userData: Partial<UserState>) => void;
   logout: () => void;
 };
 
