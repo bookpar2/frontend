@@ -1,14 +1,39 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useUserStore from '../stores/useUserStore';
+import api from '../baseURL/baseURL';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isLoggedIn } = useUserStore();
+  const { refresh, isLoggedIn, logout } = useUserStore();
   const location = useLocation();
-  const menuRef = useRef<HTMLDivElement>(null); // 메뉴의 ref 생성
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const moveToMainPage = () => {
+    navigate('/login');
+  }
+
+  const handleLogout = async() => {
+    try {
+      const response = await api.post('users/logout/', {
+        refresh: refresh
+      })
+
+      setMenuOpen(false);
+
+      if(response.status === 200) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        logout();
+        moveToMainPage();
+      }
+    } catch (error: any) {
+      console.log(error)
+    }
+  }
 
   // 외부 클릭 감지를 위한 useEffect
   useEffect(() => {
@@ -46,7 +71,10 @@ function Navbar() {
             <Link to="/mypage" className={`px-4 py-2 ${isActive('/mypage')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               마이페이지
             </Link>
-            <Link to="/logout" className={`px-4 py-2 ${isActive('/logout')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+            <Link to="/logout"
+              className={`px-4 py-2 ${isActive('/logout')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}
+              onClick={handleLogout}
+            >
               로그아웃
             </Link>
           </>
@@ -108,17 +136,16 @@ function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/logout"
+                <div
                   className={`block px-4 py-2 ${
                     isActive('/logout')? 'text-primary font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => {
-                    setMenuOpen(false);
+                    handleLogout();
                   }}
                 >
                   로그아웃
-                </Link>
+                </div>
               </li>
             </ul>
           ) : (

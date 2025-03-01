@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
+import api from '../baseURL/baseURL';
+import useUserStore from '../stores/useUserStore';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { setUser } = useUserStore();
 
   const validateEmail = (email: string) => {
     const regex = /^[a-zA-Z0-9._%+-]+@tukorea.ac.kr$/;
     return regex.test(email);
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const moveToMainPage = () => {
+    navigate('/');
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
@@ -18,13 +27,21 @@ function LoginPage() {
       return;
     }
 
-    if (email !== 'commit@tukorea.ac.kr' || password !== 'password123') {
-      setErrorMessage('아이디 또는 비밀번호가 일치하지 않습니다');
-      return;
-    }
+    try {
+      const response = await api.post("users/login/", {
+        school_email: email,
+        password: password,
+      });
 
-    setErrorMessage('');
-    alert('로그인 성공!');
+      setErrorMessage('');
+
+      setUser(response.data);
+      localStorage.setItem("refreshToken", response.data.refresh);
+      localStorage.setItem("accessToken", response.data.access);
+      moveToMainPage();
+    } catch (error: any) {
+      setErrorMessage("아이디 또는 비밀번호가 맞지 않습니다.");
+    }
   };
 
   return (
@@ -64,6 +81,7 @@ function LoginPage() {
         <button
           type="submit"
           className="w-full py-3 text-primary bg-white hover:bg-primary hover:text-white border border-primary rounded-full font-bold transition duration-200"
+          onClick={handleLogin}
         >
           로그인
         </button>
