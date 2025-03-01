@@ -17,9 +17,9 @@ const useUserStore = create<UserState>((set) => ({
   email: null,
   major: null,
   studentId: null,
-  refresh: localStorage.getItem("token") || null,
-  access: localStorage.getItem("token") || null,
-  isLoggedIn: !!localStorage.getItem("token"), // 초기값 설정
+  refresh: localStorage.getItem("refreshToken") || null,
+  access: localStorage.getItem("accessToken") || null,
+  isLoggedIn: !!localStorage.getItem("refreshToken"), // 초기값 설정
 
   setUser: (userData) => set((state) => ({
     ...state,
