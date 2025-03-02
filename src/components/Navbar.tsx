@@ -87,11 +87,11 @@ function Navbar() {
       
       {/* Mobile Menu */}
       <div className="md:hidden flex space-x-2 items-center">
-        {isLoggedIn && (
+        {/* {isLoggedIn && (
           <Link to="/">
             <img src="/images/search.svg" alt="Search" className="w-6 h-6" />
           </Link>
-        )}
+        )} */}
         <button onClick={() => setMenuOpen(!menuOpen)}>
           <img src="/images/menu.svg" alt="Menu" className="w-6 h-6" />
         </button>
