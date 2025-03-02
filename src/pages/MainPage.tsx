@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import usePostsStore from '../stores/usePostsStore';
-import PostCard from '../components/PostCard';
+import { useEffect } from "react";
+import usePostsStore from "../stores/usePostsStore";
+import PostCard from "../components/PostCard";
 
 function MainPage() {
   const { books, fetchBooks, loading, error } = usePostsStore();
@@ -14,7 +14,11 @@ function MainPage() {
       {/* 배너 */}
       <section className="w-full bg-secondary pt-16">
         <div className="w-full max-w-screen-lg mx-auto">
-          <img src="/images/home-banner.png" alt="banner" className="w-full select-none" />
+          <img
+            src="/images/home-banner.png"
+            alt="banner"
+            className="w-full select-none"
+          />
         </div>
       </section>
       {/* 판매 서적 목록 */}
@@ -43,6 +47,6 @@ function MainPage() {
       </section>
     </div>
   );
-};
+}
 
 export default MainPage;
