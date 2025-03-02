@@ -4,7 +4,7 @@ import useUserStore from "../stores/useUserStore";
 import PostCard from "../components/PostCard";
 
 function MyPage() {
-  const { email, name, studentId } = useUserStore();
+  const { school_email, name, student_id } = useUserStore();
   const { books, fetchBooks, loading, error } = usePostsStore();
 
   useEffect(() => {
@@ -22,11 +22,11 @@ function MyPage() {
           </article>
           <article className="flex space-x-4">
             <div className="font-bold">학번</div>
-            <div>{ studentId }</div>
+            <div>{ student_id }</div>
           </article>
           <article className="flex space-x-4">
             <div className="font-bold">이메일</div>
-            <div>{ email }</div>
+            <div>{ school_email }</div>
           </article>
         </section>  
       </div>
