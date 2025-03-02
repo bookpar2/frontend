@@ -35,11 +35,11 @@ const useRegisterStore = create<RegisterState>((set) => ({
       // 로그인 상태 업데이트
       useUserStore.getState().setUser({
         name,
-        email: school_email,
+        school_email,
         major,
-        studentId: student_id,
-        refresh: refresh,
-        access: access
+        student_id,
+        refresh,
+        access
       });
 
       // 토큰 로컬 스토리지 저장
