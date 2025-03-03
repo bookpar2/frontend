@@ -23,7 +23,8 @@ const usePostsStore = create<PostsState>((set, get) => ({
         description: book.description,
         saleStatus: book.status === "FOR_SALE",
         seller: book.seller,
-        imageUrls: book.image_url ? [book.image_url] : [],
+        seller_name: book.seller_name,
+        image_url: book.image_url ? [book.image_url] : [],
       }));
   
       set({ books: apiBooks, loading: false });

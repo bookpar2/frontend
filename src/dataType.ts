@@ -1,11 +1,13 @@
 export interface Book {
   book_id: number; 
-  imageUrls: string[];
+  image_url: string[];
   title: string;
   price: number;
   saleStatus: boolean;
   description: string;
   seller: string;
+  seller_name: string;
+  chatLink: string;
 }
 
 export interface PostsState {
@@ -24,5 +26,5 @@ export interface PostCardProps {
   title: string;
   price: number;
   saleStatus: boolean;
-  imageUrls: string[];
+  image_url: string[];
 }
