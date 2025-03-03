@@ -2,17 +2,41 @@ import { useNavigate, useParams } from "react-router-dom";
 import usePostsStore from "../stores/usePostsStore"
 import SalesStatus from "../components/SalesStatus";
 import useUserStore from "../stores/useUserStore";
+import api from "../baseURL/baseURL";
 
 function DetailPage() {
   const navigate = useNavigate();
   const { book_id } = useParams<{ book_id: string }>();
-  const { books } = usePostsStore();
+  const { books, fetchBooks } = usePostsStore();
   const { id } = useUserStore();
   const book = books.find((b) => b.book_id === Number(book_id));
 
   if (!book) {
     return <p className="text-center text-gray-500">책 정보를 찾을 수 없습니다.</p>;
   }
+
+  // 서적 삭제 API 호출
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("정말 이 서적을 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await api.delete(`books/${book_id}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      alert("서적이 성공적으로 삭제되었습니다.");
+      await fetchBooks(); // 삭제 후 목록 갱신
+      navigate("/"); // 메인 페이지로 이동
+    } catch (error) {
+      console.error("서적 삭제 오류:", error);
+      alert("서적 삭제 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-24 pb-8">
@@ -21,9 +45,19 @@ function DetailPage() {
           <img src={`${book.image_url}`} />
         </div>
         
-        <div className="flex items-center space-x-1 border-b py-3">
-          <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
-          <span className="text-gray-800 font-medium">{book.seller_name}</span>
+        <div className="flex justify-between border-b py-3">
+          <div className="flex space-x-1 items-center">
+            <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
+            <span className="text-gray-800 font-medium">{book.seller_name}</span>
+          </div>
+          {book.seller === id && (
+            <button
+              className="mr-2 px-3 py-1 text-sm text-white bg-red-500 rounded-md"
+              onClick={handleDelete}
+            >
+              삭제하기
+            </button>
+          )}
         </div>
 
         <div className="p-4 rounded-lg">
