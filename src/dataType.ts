@@ -3,7 +3,7 @@ export interface Book {
   image_url: string[];
   title: string;
   price: number;
-  saleStatus: boolean;
+  saleStatus: string;
   description: string;
   seller: string;
   seller_name: string;
@@ -18,7 +18,7 @@ export interface PostsState {
 }
 
 export interface SalesStatusProps {
-  saleStatus: boolean;
+  saleStatus: string;
 }
 
 export interface PostCardProps {

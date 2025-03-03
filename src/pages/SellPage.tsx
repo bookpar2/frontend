@@ -52,6 +52,12 @@ function SellPage() {
     "지식융합학부"
   ];
 
+  const saleStatuses = [
+    { value: "FOR_SALE", label: "판매 중" },
+    { value: "IN_PROGRESS", label: "거래 중" },
+    { value: "COMPLETED", label: "거래 완료" }
+  ];
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
@@ -204,13 +210,13 @@ function SellPage() {
       </div>
 
       {/* 전공 선택 (Dropdown) */}
-      <div>
-        <label className="block text-sm font-medium pl-1 pb-1">전공</label>
+      <div className="mb-4">
+        <label className="block text-gray-700 pb-1 pl-1">전공</label>
         <div className="relative">
           <select
             value={major}
             onChange={(e) => setMajor(e.target.value)}
-            className="appearance-none w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+            className="appearance-none w-full p-3 border rounded-lg pr-10"
           >
             <option value="">전공을 선택하세요</option>
             {majors.map((m) => (
@@ -219,22 +225,38 @@ function SellPage() {
               </option>
             ))}
           </select>
-          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">⌄</div>
+          {/* 화살표 아이콘 */}
+          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
         </div>
-        {error.major && <p className="text-error text-sm mt-1 pl-1">{error.major}</p>}
       </div>
 
       {/* 상태 선택 */}
-      <div>
-        <label className="block text-sm font-medium pl-1 pb-1">상태 설명</label>
-        <textarea 
-          placeholder="책의 상태를 설명해 주세요(중고 여부, 필기 여부 등)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className={`w-full h-48 p-3 border rounded-md resize-none ${error.description ? "border-error" : "border-gray-300"}`}
-        />
-        {error.description && <p className="text-error text-sm pl-1">{error.description}</p>}
-      </div>
+      {book_id && (
+        <div className="mb-4">
+          <label className="block text-gray-700 pb-1 pl-1">판매 상태</label>
+          <div className="relative">
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="appearance-none w-full p-3 border rounded-lg pr-10"
+            >
+              {saleStatuses.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+            {/* 화살표 아이콘 */}
+            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 카카오톡 오픈채팅 링크 입력 */}
       <div>

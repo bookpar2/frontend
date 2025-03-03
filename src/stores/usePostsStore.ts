@@ -21,7 +21,7 @@ const usePostsStore = create<PostsState>((set, get) => ({
         chatLink: book.chatLink,
         price: book.price,
         description: book.description,
-        saleStatus: book.status === "FOR_SALE",
+        saleStatus: book.status,
         seller: book.seller,
         seller_name: book.seller_name,
         image_url: book.image_url ? [book.image_url] : [],

@@ -34,17 +34,17 @@ function DetailPage() {
         </div>
       </div>
       
+      {/* 본인이 등록한 책이라면 무조건 "수정하기" 버튼 표시 */}
       {book.seller === id ? (
-        // 본인이 등록한 책일 경우 "수정하기" 버튼 표시
         <button 
           className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3 hover:bg-primary hover:text-white"
-          onClick={() => navigate(`/edit/${book.book_id}`)} // 수정 페이지로 이동
+          onClick={() => navigate(`/edit/${book.book_id}`)}
         >
           수정하기
         </button>
       ) : (
-        // 다른 사용자가 등록한 책일 경우 "판매자와 채팅하기" 버튼 표시
-        book.saleStatus && (
+        // "판매자와 채팅하기" 버튼은 "판매 완료(COMPLETED)"가 아닐 때만 표시
+        book.saleStatus !== "COMPLETED" && (
           <button 
             className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker"
             onClick={() => window.open(book.chatLink, "_blank")}
