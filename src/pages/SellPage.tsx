@@ -102,7 +102,21 @@ function SellPage() {
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
       {/* 이미지 업로드 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장)</label>
+        <div className="flex justify-between">
+          <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장)</label>
+          {/* RESET 버튼 추가 */}
+          {uploadedImageUrls.length > 0 && (
+            <button 
+              onClick={() => {
+                setImageFiles([]);
+                setUploadedImageUrls([]);
+              }} 
+              className="mt-2 px-3 py-1 text-sm text-white bg-red-500 rounded-md"
+            >
+              RESET
+            </button>
+          )}
+        </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
             <img key={index} src={src} alt="preview" className="w-18 h-18 object-cover rounded-md border border-gray-300 aspect-square" />
