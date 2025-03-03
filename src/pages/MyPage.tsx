@@ -37,7 +37,7 @@ function MyPage() {
           book_id: book.id,
           title: book.title,
           price: book.price,
-          saleStatus: book.status === "FOR_SALE",
+          saleStatus: book.status,
           image_url: book.image_url || [], // null이 아닐 경우 배열로 변환
         }));
 
