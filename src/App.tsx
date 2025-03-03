@@ -44,6 +44,14 @@ function App() {
             }
           />
           <Route
+            path="/edit/:book_id"
+            element={
+              <ProtectedRoute>
+                <SellPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/detail/:book_id"
             element={
               <ProtectedRoute>

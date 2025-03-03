@@ -65,9 +65,9 @@ function Navbar() {
             <Link to="/sell" className={`px-4 py-2 ${isActive('/sell') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               판매하기
             </Link>
-            <Link to="/chat" className={`px-4 py-2 ${isActive('/chat')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+            {/* <Link to="/chat" className={`px-4 py-2 ${isActive('/chat')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               채팅하기
-            </Link>
+            </Link> */}
             <Link to="/mypage" className={`px-4 py-2 ${isActive('/mypage')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               마이페이지
             </Link>
@@ -113,7 +113,7 @@ function Navbar() {
                   판매하기
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   to="/chat"
                   className={`block px-4 py-2 ${
@@ -123,7 +123,7 @@ function Navbar() {
                 >
                   채팅하기
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   to="/mypage"
