@@ -59,9 +59,9 @@ function Navbar() {
   return (
     <header className="fixed top-0 z-[60] w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center">
       <img 
-        src="/images/logo.svg" 
+        src="/images/logo.png" 
         alt="Logo"
-        className="pl-1 select-none cursor-pointer w-14 h-8"
+        className="pl-1 select-none cursor-pointer h-8"
         onClick={moveToMainPage}
       />
 
