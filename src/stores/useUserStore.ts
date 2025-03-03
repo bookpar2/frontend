@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 interface UserState {
+  id: string | null;
   name: string | null;
   school_email: string | null;
   major: string | null;
@@ -13,6 +14,7 @@ interface UserState {
 }
 
 const useUserStore = create<UserState>((set) => ({
+  id: null,
   name: null,
   school_email: null,
   major: null,
@@ -31,6 +33,7 @@ const useUserStore = create<UserState>((set) => ({
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
     set({
+      id: null,
       name: null,
       school_email: null,
       major: null,
