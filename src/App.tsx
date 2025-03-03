@@ -36,7 +36,15 @@ function App() {
 
           {/* 로그인한 사용자만 접근 가능 */}
           <Route
-            path="/sell"
+            path="/sell/:book_id"
+            element={
+              <ProtectedRoute>
+                <SellPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/:book_id"
             element={
               <ProtectedRoute>
                 <SellPage />

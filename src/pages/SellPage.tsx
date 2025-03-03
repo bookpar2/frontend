@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
 
 function SellPage() {
   const navigate = useNavigate();
+  const { book_id } = useParams<{ book_id?: string }>();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
   const [title, setTitle] = useState("");
@@ -65,38 +66,76 @@ function SellPage() {
   // 서적 등록 API 요청
   const handleSubmit = async () => {
     setLoading(true);
-    
     try {
       const token = localStorage.getItem("accessToken");
-  
-      await api.post(
-        "books/",
-        {
-          title,
-          chatLink,
-          price: Number(price),
-          description,
-          major,
-          image_url: "",
-          status,
-        },
-        {
+      const requestData = {
+        title,
+        chatLink,
+        price: Number(price),
+        description,
+        major,
+        // image_url: uploadedImageUrls, // 기존 S3 URL 유지
+        status,
+      };
+
+      if (book_id) {
+        // 수정 모드 (PATCH 요청)
+        await api.patch(`books/${book_id}/`, requestData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
-      );
-  
-      alert("서적이 성공적으로 등록되었습니다.");
-      navigate("/");
+        });
+        alert("서적 정보가 성공적으로 수정되었습니다.");
+        navigate(`/detail/${book_id}`); // 상세 페이지로 이동
+      } else {
+        // 등록 모드 (POST 요청)
+        await api.post("books/", requestData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        alert("서적이 성공적으로 등록되었습니다.");
+        navigate("/");
+      }
     } catch (error) {
-      console.error("서적 등록 오류:", error);
-      alert("서적 등록 중 오류가 발생했습니다.");
+      console.error("서적 등록/수정 오류:", error);
+      alert("서적 등록/수정 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
-  };  
+  };
+
+  // 수정 모드일 경우 기존 데이터 불러옴
+  useEffect(() => {
+    if (!book_id) return; // 등록 모드면 실행 X
+    setLoading(true);
+
+    const fetchBookData = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await api.get(`books/${book_id}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const bookData = response.data;
+        setTitle(bookData.title);
+        setChatLink(bookData.chatLink);
+        setPrice(String(bookData.price));
+        setMajor(bookData.major);
+        setStatus(bookData.status);
+        setDescription(bookData.description);
+        setUploadedImageUrls(bookData.image_url || []);
+      } catch (error) {
+        console.error("서적 정보 불러오기 오류:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookData();
+  }, [book_id]);
 
   return (
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
@@ -210,9 +249,9 @@ function SellPage() {
         {error.chatLink && <p className="text-error text-sm mt-1 pl-1">{error.chatLink}</p>}
       </div>
 
-      {/* 등록 버튼 */}
+      {/* 등록 / 수정 버튼 */}
       <button className="w-full bg-primary text-white py-3 rounded-full" onClick={handleSubmit} disabled={loading}>
-        {loading ? "등록 중..." : "등록하기"}
+        {loading ? "처리 중..." : book_id ? "수정하기" : "등록하기"}
       </button>
     </div>
   );
