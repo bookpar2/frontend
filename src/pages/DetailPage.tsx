@@ -1,10 +1,13 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import usePostsStore from "../stores/usePostsStore"
 import SalesStatus from "../components/SalesStatus";
+import useUserStore from "../stores/useUserStore";
 
 function DetailPage() {
+  const navigate = useNavigate();
   const { book_id } = useParams<{ book_id: string }>();
   const { books } = usePostsStore();
+  const { id } = useUserStore();
   const book = books.find((b) => b.book_id === Number(book_id));
 
   if (!book) {
@@ -31,13 +34,24 @@ function DetailPage() {
         </div>
       </div>
       
-      {book.saleStatus && (
+      {book.seller === id ? (
+        // 본인이 등록한 책일 경우 "수정하기" 버튼 표시
         <button 
-          className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker"
-          onClick={() => window.open(book.chatLink, "_blank")}
+          className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3 hover:bg-primary hover:text-white"
+          onClick={() => navigate(`/edit/${book.book_id}`)} // 수정 페이지로 이동
         >
-          판매자와 채팅하기
+          수정하기
         </button>
+      ) : (
+        // 다른 사용자가 등록한 책일 경우 "판매자와 채팅하기" 버튼 표시
+        book.saleStatus && (
+          <button 
+            className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker"
+            onClick={() => window.open(book.chatLink, "_blank")}
+          >
+            판매자와 채팅하기
+          </button>
+        )
       )}
     </div>
   );
