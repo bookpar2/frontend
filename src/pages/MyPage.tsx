@@ -1,15 +1,60 @@
-import { useEffect } from "react";
-import usePostsStore from "../stores/usePostsStore";
-import useUserStore from "../stores/useUserStore";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
 import PostCard from "../components/PostCard";
+import { PostCardProps } from "../dataType";
 
 function MyPage() {
-  const { school_email, name, student_id } = useUserStore();
-  const { books, fetchBooks, loading, error } = usePostsStore();
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    student_id: "",
+    school_email: "",
+  });
+
+  const [books, setBooks] = useState<PostCardProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-      fetchBooks();
-    }, [fetchBooks]);
+    const fetchUserBooks = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await api.get("books/user/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // 사용자 정보 저장
+        setUserInfo({
+          name: response.data.sellers.name,
+          student_id: response.data.sellers.student_id,
+          school_email: response.data.sellers.school_email,
+        });
+
+        // 책 목록 저장 (API 응답 구조에 맞게 변환)
+        const booksData: PostCardProps[] = response.data.books.map((book: any) => ({
+          book_id: book.id,
+          title: book.title,
+          price: book.price,
+          saleStatus: book.status === "FOR_SALE",
+          image_url: book.image_url || [], // null이 아닐 경우 배열로 변환
+        }));
+
+        setBooks(booksData);
+      } catch (error) {
+        console.error("내 서적 불러오기 오류:", error);
+        setError("데이터를 불러오는 중 문제가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserBooks();
+  }, []);
 
   return (
     <div className="max-w-md min-h-screen flex flex-col mx-auto items-center pt-20 sm:pt-18">
@@ -18,15 +63,15 @@ function MyPage() {
         <section className="w-full border border-primary rounded-2xl max-w-md p-8 space-y-4">
           <article className="flex space-x-4">
             <div className="font-bold">이름</div>
-            <div>{ name }</div>
+            <div>{userInfo.name}</div>
           </article>
           <article className="flex space-x-4">
             <div className="font-bold">학번</div>
-            <div>{ student_id }</div>
+            <div>{userInfo.student_id}</div>
           </article>
           <article className="flex space-x-4">
             <div className="font-bold">이메일</div>
-            <div>{ school_email }</div>
+            <div>{userInfo.school_email}</div>
           </article>
         </section>  
       </div>
@@ -47,16 +92,16 @@ function MyPage() {
                 title={book.title}
                 price={book.price}
                 saleStatus={book.saleStatus}
-                image_url={book.image_url}
+                image_url={book.image_url} // 기본 이미지 설정
               />
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-2">판매 중인 중고서적이 없습니다</p>
+          <p className="text-gray-500 mt-2">등록한 중고서적이 없습니다</p>
         )}
       </section>
     </div>
-  )
+  );
 }
 
 export default MyPage;
