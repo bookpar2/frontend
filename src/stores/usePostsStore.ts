@@ -8,8 +8,6 @@ const usePostsStore = create<PostsState>((set, get) => ({
   error: null,
   
   fetchBooks: async () => {
-    if (get().books.length > 0) return;
-  
     set({ loading: true, error: null });
   
     try {
