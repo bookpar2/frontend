@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
+import usePostsStore from "../stores/usePostsStore";
 
 function SellPage() {
   const navigate = useNavigate();
   const { book_id } = useParams<{ book_id?: string }>();
+  const { fetchBooks } = usePostsStore();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
   const [title, setTitle] = useState("");
@@ -103,8 +105,9 @@ function SellPage() {
           },
         });
         alert("서적이 성공적으로 등록되었습니다.");
-        navigate("/");
       }
+      await fetchBooks();
+      navigate("/");
     } catch (error) {
       console.error("서적 등록/수정 오류:", error);
       alert("서적 등록/수정 중 오류가 발생했습니다.");
