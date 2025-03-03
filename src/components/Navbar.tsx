@@ -16,6 +16,10 @@ function Navbar() {
     navigate('/login');
   }
 
+  const moveToMainPage = () => {
+    navigate('/');
+  }
+
   const handleLogout = async() => {
     try {
       const response = await api.post('users/logout/', {
@@ -54,10 +58,13 @@ function Navbar() {
 
   return (
     <header className="fixed top-0 z-[60] w-full bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center">
-      <Link to="/">
-        <object data="/images/logo.svg" className="h-8 pl-1 select-none" />
-      </Link>
-      
+      <img 
+        src="/images/logo.svg" 
+        alt="Logo"
+        className="pl-1 select-none cursor-pointer w-14 h-8"
+        onClick={moveToMainPage}
+      />
+
       {/* Desktop Navigation */}
       <nav className="hidden md:flex">
         {isLoggedIn ? (
