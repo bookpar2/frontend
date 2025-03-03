@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
 import PostCard from "../components/PostCard";
 import { PostCardProps } from "../dataType";
@@ -14,8 +13,6 @@ function MyPage() {
   const [books, setBooks] = useState<PostCardProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserBooks = async () => {
