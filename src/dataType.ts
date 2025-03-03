@@ -25,6 +25,6 @@ export interface PostCardProps {
   book_id: number;
   title: string;
   price: number;
-  saleStatus: boolean;
+  saleStatus: string;
   image_url: string[];
 }
