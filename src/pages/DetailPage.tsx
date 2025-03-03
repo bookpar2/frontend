@@ -20,7 +20,7 @@ function DetailPage() {
         
         <div className="flex items-center space-x-1 border-b py-3">
           <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
-          <span className="text-gray-800 font-medium">{book.seller}</span>
+          <span className="text-gray-800 font-medium">{book.seller_name}</span>
         </div>
 
         <div className="p-4 rounded-lg">
@@ -30,9 +30,12 @@ function DetailPage() {
           <p className="text-sm text-gray-700 mt-2">{book.description}</p>
         </div>
       </div>
-
-      {!book.saleStatus && (
-        <button className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker">
+      
+      {book.saleStatus && (
+        <button 
+          className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker"
+          onClick={() => window.open(book.chatLink, "_blank")}
+        >
           판매자와 채팅하기
         </button>
       )}
