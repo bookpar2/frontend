@@ -159,7 +159,7 @@ function RegisterPage() {
     // 오류가 없으면 회원가입 요청
     if (Object.values(tempErrors).every((error) => error === "")) {
       try {
-        const response = await api.post("users/register/", {
+        await api.post("users/register/", {
           school_email: email,
           password: password,
           name: name,
@@ -167,10 +167,8 @@ function RegisterPage() {
           major: major,
           verification_code: verificationCode,
         });
-
         alert("회원가입 성공! 로그인 페이지로 이동합니다.");
         navigate("/login"); // 로그인 페이지로 이동
-
       } catch (error: any) {
         console.error("회원가입 오류:", error.response?.data);
         setErrors({ ...errors, email: error.response?.data?.message || "회원가입 중 오류가 발생했습니다." });

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
+import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
+import heic2any from "heic2any";
 
 function SellPage() {
   const navigate = useNavigate();
@@ -16,14 +17,14 @@ function SellPage() {
   const [major, setMajor] = useState("");
   const [status, setStatus] = useState("FOR_SALE");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState({
-    image: "",
-    title: "",
-    price: "",
-    description: "",
-    major: "",
-    chatLink: ""
-  });
+  // const [error, setError] = useState({
+  //   image: "",
+  //   title: "",
+  //   price: "",
+  //   description: "",
+  //   major: "",
+  //   chatLink: ""
+  // });
   const [loading, setLoading] = useState(false);
 
   const majors = [
@@ -60,52 +61,91 @@ function SellPage() {
     { value: "COMPLETED", label: "거래 완료" }
   ];
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const files = Array.from(event.target.files);
-      console.log(files)
-      const fileUrls = files.map((file) => URL.createObjectURL(file));
-  
-      setImageFiles([...imageFiles, ...files].slice(0, 3)); // 이미지 파일 저장
-      setUploadedImageUrls([...uploadedImageUrls, ...fileUrls].slice(0, 3)); // 로컬 URL 저장
-    }
-  };  
+const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (!event.target.files) return;
+
+  const newFilesArray = Array.from(event.target.files);
+
+  // HEIC 파일을 JPEG로 변환
+  const convertedFilesArray = await Promise.all(
+    newFilesArray.map(async (file) => {
+      if (file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic")) {
+        try {
+          const convertedBlob = await heic2any({
+            blob: file,
+            toType: "image/jpeg",
+          });
+
+          const convertedFile = new File(
+            [convertedBlob as Blob],
+            file.name.replace(/\.heic$/i, ".jpg"),
+            { type: "image/jpeg" }
+          );
+          return convertedFile;
+        } catch (e) {
+          console.error("HEIC 파일 변환 오류:", e);
+          alert("HEIC 파일 변환 중 오류가 발생했습니다.");
+          return null;
+        }
+      } else {
+        return file;
+      }
+    })
+  );
+
+  // 유효한 파일만 필터링
+  const validFiles = convertedFilesArray.filter((file): file is File => file !== null);
+
+  if (validFiles.length === 0) return;
+
+  // 로컬 미리보기용 URL 생성
+  const fileUrls = validFiles.map((file) => URL.createObjectURL(file));
+
+  setImageFiles((prev) => [...prev, ...validFiles].slice(0, 3));
+  setUploadedImageUrls((prev) => [...prev, ...fileUrls].slice(0, 3));
+};
 
   // 서적 등록 API 요청
   const handleSubmit = async () => {
+    if (!imageFiles.length) {
+      alert("최소 1개의 이미지를 업로드해야 합니다.");
+      return;
+    }
+
     setLoading(true);
+
     try {
       const token = localStorage.getItem("accessToken");
-      const requestData = {
-        title,
-        chatLink,
-        price: Number(price),
-        description,
-        major,
-        // image_url: uploadedImageUrls, // 기존 S3 URL 유지
-        status,
-      };
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("chatLink", chatLink);
+      formData.append("price", price);
+      formData.append("description", description);
+      formData.append("major", major);
+      formData.append("status", status);
+
+      imageFiles.forEach((file) => formData.append("image_url", file));
 
       if (book_id) {
-        // 수정 모드 (PATCH 요청)
-        await api.patch(`books/${book_id}/`, requestData, {
+        await api.patch(`books/${book_id}/`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         });
         alert("서적 정보가 성공적으로 수정되었습니다.");
-        navigate(`/detail/${book_id}`); // 상세 페이지로 이동
+        navigate(`/detail/${book_id}`);
       } else {
-        // 등록 모드 (POST 요청)
-        await api.post("books/", requestData, {
+        await api.post("books/", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         });
         alert("서적이 성공적으로 등록되었습니다.");
       }
+
       await fetchBooks();
       navigate("/");
     } catch (error) {
@@ -194,9 +234,9 @@ function SellPage() {
           placeholder="책 제목을 입력하세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`w-full p-3 border rounded-md ${error.title ? "border-error" : "border-gray-300"}`}
+          className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {error.title && <p className="text-error text-sm mt-1 pl-1">{error.title}</p>}
+        {/* {error.title && <p className="text-error text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
@@ -207,9 +247,9 @@ function SellPage() {
           placeholder="가격을 입력하세요"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className={`w-full p-3 border rounded-md ${error.price ? "border-error" : "border-gray-300"}`}
+          className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {error.price && <p className="text-error text-sm mt-1 pl-1">{error.price}</p>}
+        {/* {error.price && <p className="text-error text-sm mt-1 pl-1">{error.price}</p>} */}
       </div>
 
       {/* 전공 선택 (Dropdown) */}
@@ -269,9 +309,9 @@ function SellPage() {
           placeholder="카카오톡 오픈채팅 링크를 입력하세요"
           value={chatLink}
           onChange={(e) => setChatLink(e.target.value)}
-          className={`w-full p-3 border rounded-md ${error.chatLink ? "border-error" : "border-gray-300"}`}
+          className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {error.chatLink && <p className="text-error text-sm mt-1 pl-1">{error.chatLink}</p>}
+        {/* {error.chatLink && <p className="text-error text-sm mt-1 pl-1">{error.chatLink}</p>} */}
       </div>
 
       {/* 등록 / 수정 버튼 */}

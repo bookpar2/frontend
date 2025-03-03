@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import api from "../baseURL/baseURL"; // Axios 인스턴스 추가
+import api from "../baseURL/baseURL";
 import { PostsState } from "../dataType";
 
-const usePostsStore = create<PostsState>((set, get) => ({
+const usePostsStore = create<PostsState>((set) => ({
   books: [],
   loading: false,
   error: null,
