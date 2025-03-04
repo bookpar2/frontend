@@ -12,7 +12,7 @@ function MainPage() {
   return (
     <div className="min-h-screen">
       {/* 배너 */}
-      <section className="w-full bg-secondary pt-16">
+      <section className="w-full bg-[#EDF3FF] pt-16">
         <div className="w-full max-w-screen-lg mx-auto">
           <img
             src="/images/home-banner.png"

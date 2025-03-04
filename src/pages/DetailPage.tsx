@@ -71,7 +71,7 @@ function DetailPage() {
       {/* 본인이 등록한 책이라면 무조건 "수정하기" 버튼 표시 */}
       {book.seller === id ? (
         <button 
-          className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3 hover:bg-primary hover:text-white"
+          className="w-full bg-white border border-[#617EF1] text-[#617EF1] py-3 rounded-full mt-3 hover:bg-[#617EF1] hover:text-white"
           onClick={() => navigate(`/edit/${book.book_id}`)}
         >
           수정하기
@@ -80,7 +80,7 @@ function DetailPage() {
         // "판매자와 채팅하기" 버튼은 "판매 완료(COMPLETED)"가 아닐 때만 표시
         book.saleStatus !== "COMPLETED" && (
           <button 
-            className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-darker"
+            className="w-full bg-[#617EF1] text-white py-3 rounded-full mt-3 hover:bg-[#4B63C1]"
             onClick={() => window.open(book.chatLink, "_blank")}
           >
             판매자와 채팅하기

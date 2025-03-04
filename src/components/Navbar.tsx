@@ -69,24 +69,24 @@ function Navbar() {
       <nav className="hidden md:flex">
         {isLoggedIn ? (
           <>
-            <Link to="/sell" className={`px-4 py-2 ${isActive('/sell') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+            <Link to="/sell" className={`px-4 py-2 ${isActive('/sell') ? 'text-[#617EF1] font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               판매하기
             </Link>
-            {/* <Link to="/chat" className={`px-4 py-2 ${isActive('/chat')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+            {/* <Link to="/chat" className={`px-4 py-2 ${isActive('/chat')? 'text-[#617EF1] font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               채팅하기
             </Link> */}
-            <Link to="/mypage" className={`px-4 py-2 ${isActive('/mypage')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+            <Link to="/mypage" className={`px-4 py-2 ${isActive('/mypage')? 'text-[#617EF1] font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
               마이페이지
             </Link>
             <Link to="/logout"
-              className={`px-4 py-2 ${isActive('/logout')? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}
+              className={`px-4 py-2 ${isActive('/logout')? 'text-[#617EF1] font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}
               onClick={handleLogout}
             >
               로그아웃
             </Link>
           </>
         ) : (
-          <Link to="/login" className={`px-4 py-2 ${isActive('/login') ? 'text-primary font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
+          <Link to="/login" className={`px-4 py-2 ${isActive('/login') ? 'text-[#617EF1] font-bold' : 'text-gray-700'} hover:bg-gray-100 rounded-lg`}>
             로그인
           </Link>
         )}
@@ -113,7 +113,7 @@ function Navbar() {
                 <Link
                   to="/sell"
                   className={`block px-4 py-2 ${
-                    isActive('/sell') ? 'text-primary font-bold' : 'text-gray-700'
+                    isActive('/sell') ? 'text-[#617EF1] font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -124,7 +124,7 @@ function Navbar() {
                 <Link
                   to="/chat"
                   className={`block px-4 py-2 ${
-                    isActive('/chat') ? 'text-primary font-bold' : 'text-gray-700'
+                    isActive('/chat') ? 'text-[#617EF1] font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -135,7 +135,7 @@ function Navbar() {
                 <Link
                   to="/mypage"
                   className={`block px-4 py-2 ${
-                    isActive('/mypage') ? 'text-primary font-bold' : 'text-gray-700'
+                    isActive('/mypage') ? 'text-[#617EF1] font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => setMenuOpen(false)}
                 >
@@ -145,7 +145,7 @@ function Navbar() {
               <li>
                 <div
                   className={`block px-4 py-2 ${
-                    isActive('/logout')? 'text-primary font-bold' : 'text-gray-700'
+                    isActive('/logout')? 'text-[#617EF1] font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => {
                     handleLogout();
@@ -161,7 +161,7 @@ function Navbar() {
                 <Link
                   to="/login"
                   className={`block px-4 py-2 ${
-                    isActive('/login') ? 'text-primary font-bold' : 'text-gray-700'
+                    isActive('/login') ? 'text-[#617EF1] font-bold' : 'text-gray-700'
                   } hover:bg-gray-100`}
                   onClick={() => setMenuOpen(false)}
                 >
