@@ -57,10 +57,10 @@ function LoginPage() {
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border-error' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border-[#ED7E7F]' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
           {errorMessage && !validateEmail(email) && (
-            <p className="text-error text-sm mt-2">{errorMessage}</p>
+            <p className="text-[#ED7E7F] text-sm mt-2">{errorMessage}</p>
           )}
         </div>
 
@@ -73,14 +73,14 @@ function LoginPage() {
             placeholder="비밀번호를 입력해 주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]"
           />
         </div>
 
         {/* 로그인 버튼 */}
         <button
           type="submit"
-          className="w-full py-3 text-primary bg-white hover:bg-primary hover:text-white border border-primary rounded-full font-bold transition duration-200"
+          className="w-full py-3 text-[#617EF1] bg-white hover:bg-[#617EF1] hover:text-white border border-[#617EF1] rounded-full font-bold transition duration-200"
           onClick={handleLogin}
         >
           로그인
@@ -88,12 +88,12 @@ function LoginPage() {
       </form>
 
       {errorMessage && validateEmail(email) && (
-        <p className="text-error text-sm mt-4">{errorMessage}</p>
+        <p className="text[#ED7E7F] text-sm mt-4">{errorMessage}</p>
       )}
 
       {/* 회원가입 안내 */}
       <p className="mt-8 text-gray-600">
-        회원이 아니신가요? <a href="/register" className="text-primary hover:underline">회원가입</a>
+        회원이 아니신가요? <a href="/register" className="text-[#617EF1] hover:underline">회원가입</a>
       </p>
     </div>
   );

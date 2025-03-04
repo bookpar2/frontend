@@ -189,9 +189,9 @@ function RegisterPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력해 주세요"
-            className={`w-full p-3 border ${errors.name ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.name ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
-          {errors.name && <p className="text-error text-xs mt-2">{errors.name}</p>}
+          {errors.name && <p className="text[#ED7E7F] text-xs mt-2">{errors.name}</p>}
         </div>
 
         {/* 학번 입력 */}
@@ -203,9 +203,9 @@ function RegisterPage() {
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="학번을 입력해 주세요"
-            className={`w-full p-3 border ${errors.studentId ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.studentId ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
-          {errors.studentId && <p className="text-error text-xs mt-2">{errors.studentId}</p>}
+          {errors.studentId && <p className="text[#ED7E7F] text-xs mt-2">{errors.studentId}</p>}
         </div>
 
         {/* 전공 선택 Dropdown */}
@@ -215,7 +215,7 @@ function RegisterPage() {
             <select
               value={major}
               onChange={(e) => setMajor(e.target.value)}
-              className={`appearance-none w-full p-3 border ${errors.major ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white pr-10`}
+              className={`appearance-none w-full p-3 border ${errors.major ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1] bg-white pr-10`}
             >
               <option value="">전공을 선택하세요</option>
               {majors.map((m) => (
@@ -231,7 +231,7 @@ function RegisterPage() {
               </svg>
             </div>
           </div>
-          {errors.major && <p className="text-error text-xs mt-2">{errors.major}</p>}
+          {errors.major && <p className="text[#ED7E7F] text-xs mt-2">{errors.major}</p>}
         </div>
 
         {/* 이메일 입력 */}
@@ -244,18 +244,18 @@ function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="학교 이메일을 입력해 주세요"
-              className={`w-3/4 p-3 border mr-2 ${errors.email ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+              className={`w-3/4 p-3 border mr-2 ${errors.email ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
             />
             <button
               type="button"
               onClick={handleEmailVerification}
-              className={`w-1/4 text-white bg-primary hover:bg-darker rounded-lg text-sm ${isVerifying ? "cursor-none" : "cursor-pointer"}`}
+              className={`w-1/4 text-white bg-[#617EF1] hover:bg-[#4B63C1] rounded-lg text-sm ${isVerifying ? "cursor-none" : "cursor-pointer"}`}
               disabled={isVerifying} // 요청 중일 때 버튼 비활성화
             >
               {isVerifying ? "전송 중..." : "인증"}
             </button>
           </div>
-          {errors.email && <p className="text-error text-xs mt-2">{errors.email}</p>}
+          {errors.email && <p className="text[#ED7E7F] text-xs mt-2">{errors.email}</p>}
         </div>
 
         {/* 인증코드 입력란 */}
@@ -268,18 +268,18 @@ function RegisterPage() {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               placeholder="인증코드를 입력해 주세요"
-              className={`w-3/4 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+              className={`w-3/4 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
             />
             <button
               type="button"
               onClick={handleVerifyCode}
-              className={`w-1/4 text-white bg-primary hover:bg-darker rounded-lg text-sm ${isCheckingCode ? "cursor-none" : "cursor-pointer"}`}
+              className={`w-1/4 text-white bg-[#617EF1] hover:bg-[#4B63C1] rounded-lg text-sm ${isCheckingCode ? "cursor-none" : "cursor-pointer"}`}
               disabled={isCheckingCode} // 요청 중일 때 버튼 비활성화
             >
               {isCheckingCode ? "전송 중..." : "확인"}
             </button>
           </div>
-          {errors.verificationCode == "유효하지 않은 인증 코드입니다." ? <p className="text-error text-xs mt-2">{errors.verificationCode}</p> : ""}
+          {errors.verificationCode == "유효하지 않은 인증 코드입니다." ? <p className="text[#ED7E7F] text-xs mt-2">{errors.verificationCode}</p> : ""}
         </div>
 
         {/* 비밀번호 입력 */}
@@ -291,9 +291,9 @@ function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호를 입력해 주세요"
-            className={`w-full p-3 border ${errors.password ? "border-error" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.password ? "border[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
-          {errors.password && <p className="text-error text-xs mt-2">{errors.password}</p>}
+          {errors.password && <p className="text[#ED7E7F] text-xs mt-2">{errors.password}</p>}
         </div>
 
         {/* 비밀번호 확인 */}
@@ -305,15 +305,15 @@ function RegisterPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="비밀번호를 다시 입력해 주세요"
-            className={`w-full p-3 border ${errors.confirmPassword ? 'border-error' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.confirmPassword ? 'border[#ED7E7F]' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
-          {errors.confirmPassword && <p className="text-error text-xs mt-2">{errors.confirmPassword}</p>}
+          {errors.confirmPassword && <p className="text[#ED7E7F] text-xs mt-2">{errors.confirmPassword}</p>}
         </div>
 
         {/* 회원가입 버튼 */}
         <button 
           type="submit"
-          className="w-full py-3 mb-12 text-white bg-primary hover:bg-darker border rounded-full font-bold transition duration-200"
+          className="w-full py-3 mb-12 text-white bg-[#617EF1] hover:bg-[#4B63C1] border rounded-full font-bold transition duration-200"
           onClick={handleRegisterUser}
         >
           회원가입

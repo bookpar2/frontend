@@ -223,7 +223,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
             </label>
           )}
         </div>
-        {/* {error.image && <p className="text-error text-sm mt-1 pl-1">{error.image}</p>} */}
+        {/* {error.image && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.image}</p>} */}
       </div>
 
       {/* 책 제목 입력 */}
@@ -236,7 +236,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setTitle(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.title && <p className="text-error text-sm mt-1 pl-1">{error.title}</p>} */}
+        {/* {error.title && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
@@ -249,7 +249,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setPrice(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.price && <p className="text-error text-sm mt-1 pl-1">{error.price}</p>} */}
+        {/* {error.price && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.price}</p>} */}
       </div>
 
       {/* 전공 선택 (Dropdown) */}
@@ -311,11 +311,11 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setChatLink(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.chatLink && <p className="text-error text-sm mt-1 pl-1">{error.chatLink}</p>} */}
+        {/* {error.chatLink && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.chatLink}</p>} */}
       </div>
 
       {/* 등록 / 수정 버튼 */}
-      <button className="w-full bg-primary text-white py-3 rounded-full" onClick={handleSubmit} disabled={loading}>
+      <button className="w-full bg-[#617EF1] text-white py-3 rounded-full" onClick={handleSubmit} disabled={loading}>
         {loading ? "처리 중..." : book_id ? "수정하기" : "등록하기"}
       </button>
     </div>

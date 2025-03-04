@@ -8,6 +8,7 @@ import DetailPage from './pages/DetailPage';
 import MyPage from './pages/MyPage';
 import useUserStore from './stores/useUserStore';
 import { ReactNode } from 'react';
+import './App.css'
 
 interface ProtectedRouteProps {
   children: ReactNode;
