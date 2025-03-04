@@ -64,7 +64,6 @@ function DetailPage() {
   return (
     <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-24 pb-8">
       <div>
-
         {/* 이미지 슬라이드 */}
         <div {...handlers} className="relative flex aspect-square bg-blue-100 p-6 rounded-lg text-center items-center overflow-hidden">
           <img src={images[currentImageIndex]} className="w-full h-full object-cover rounded-lg" alt="Book Image" />
