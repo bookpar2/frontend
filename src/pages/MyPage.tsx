@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
 import PostCard from "../components/PostCard";
-import { PostCardProps } from "../dataType";
+import { Book } from "../dataType";
 
 function MyPage() {
   const [userInfo, setUserInfo] = useState({
@@ -10,7 +10,7 @@ function MyPage() {
     school_email: "",
   });
 
-  const [books, setBooks] = useState<PostCardProps[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,13 +32,17 @@ function MyPage() {
           school_email: response.data.sellers.school_email,
         });
 
-        // 책 목록 저장 (API 응답 구조에 맞게 변환)
-        const booksData: PostCardProps[] = response.data.books.map((book: any) => ({
+        // 책 목록 저장 (첫 번째 이미지만 가져오도록 수정)
+        const booksData: Book[] = response.data.books.map((book: any) => ({
           book_id: book.id,
+          images: book.images.map((img: any) => img.image_url) || [],
           title: book.title,
           price: book.price,
           saleStatus: book.status,
-          image_url: book.image_url || [], // null이 아닐 경우 배열로 변환
+          description: book.description,
+          seller: book.seller,
+          seller_name: book.seller_name,
+          chatLink: book.chatLink,
         }));
 
         setBooks(booksData);
@@ -89,7 +93,7 @@ function MyPage() {
                 title={book.title}
                 price={book.price}
                 saleStatus={book.saleStatus}
-                image_url={book.image_url} // 기본 이미지 설정
+                image_url={book.images[0]} 
               />
             ))}
           </div>

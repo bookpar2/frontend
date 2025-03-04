@@ -61,62 +61,70 @@ function SellPage() {
     { value: "COMPLETED", label: "거래 완료" }
   ];
 
-const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (!event.target.files) return;
-
-  const newFilesArray = Array.from(event.target.files);
-
-  // HEIC 파일을 JPEG로 변환
-  const convertedFilesArray = await Promise.all(
-    newFilesArray.map(async (file) => {
-      if (file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic")) {
-        try {
-          const convertedBlob = await heic2any({
-            blob: file,
-            toType: "image/jpeg",
-          });
-
-          const convertedFile = new File(
-            [convertedBlob as Blob],
-            file.name.replace(/\.heic$/i, ".jpg"),
-            { type: "image/jpeg" }
-          );
-          return convertedFile;
-        } catch (e) {
-          console.error("HEIC 파일 변환 오류:", e);
-          alert("HEIC 파일 변환 중 오류가 발생했습니다.");
-          return null;
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+  
+    const newFilesArray = Array.from(event.target.files);
+    console.log("📸 업로드된 원본 파일들:", newFilesArray);
+  
+    // HEIC 파일을 JPEG로 변환
+    const convertedFilesArray = await Promise.all(
+      newFilesArray.map(async (file) => {
+        if (file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic")) {
+          try {
+            console.log(`🛠 HEIC 변환 중: ${file.name}`);
+            const convertedBlob = await heic2any({
+              blob: file,
+              toType: "image/jpeg",
+            });
+  
+            const convertedFile = new File(
+              [convertedBlob as Blob],
+              file.name.replace(/\.heic$/i, ".jpg"),
+              { type: "image/jpeg" }
+            );
+  
+            console.log(`HEIC 변환 완료: ${convertedFile.name}`);
+            return convertedFile;
+          } catch (e) {
+            console.error("HEIC 파일 변환 오류:", e);
+            alert("HEIC 파일 변환 중 오류가 발생했습니다.");
+            return null;
+          }
+        } else {
+          return file;
         }
-      } else {
-        return file;
-      }
-    })
-  );
-
-  // 유효한 파일만 필터링
-  const validFiles = convertedFilesArray.filter((file): file is File => file !== null);
-
-  if (validFiles.length === 0) return;
-
-  // 로컬 미리보기용 URL 생성
-  const fileUrls = validFiles.map((file) => URL.createObjectURL(file));
-
-  setImageFiles((prev) => [...prev, ...validFiles].slice(0, 3));
-  setUploadedImageUrls((prev) => [...prev, ...fileUrls].slice(0, 3));
-};
+      })
+    );
+  
+    // 유효한 파일만 필터링
+    const validFiles = convertedFilesArray.filter((file): file is File => file !== null);
+  
+    if (validFiles.length === 0) return;
+  
+    // 로컬 미리보기용 URL 생성 (새로 추가한 파일만 미리보기)
+    const fileUrls = validFiles.map((file) => URL.createObjectURL(file));
+  
+    console.log("📂 변환된 및 유지된 파일들:", validFiles);
+    console.log("🖼 생성된 미리보기 URL들:", fileUrls);
+  
+    // 기존 S3 URL 유지, 새 파일만 추가
+    setImageFiles((prev) => [...prev, ...validFiles].slice(0, 3));
+    setUploadedImageUrls((prev) => [...prev, ...fileUrls].slice(0, 3)); // UI 미리보기를 위해 URL 추가
+  };  
 
   // 서적 등록 API 요청
   const handleSubmit = async () => {
-    if (!imageFiles.length) {
+    if (uploadedImageUrls.length === 0 && imageFiles.length === 0) {
       alert("최소 1개의 이미지를 업로드해야 합니다.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const token = localStorage.getItem("accessToken");
-
+  
       const formData = new FormData();
       formData.append("title", title);
       formData.append("chatLink", chatLink);
@@ -124,9 +132,17 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
       formData.append("description", description);
       formData.append("major", major);
       formData.append("status", status);
-
-      imageFiles.forEach((file) => formData.append("image_url", file));
-
+  
+      // 기존의 S3 URL을 배열로 전송
+      uploadedImageUrls.forEach((url) => {
+        formData.append("image_url[]", url);
+      });
+  
+      // 새로 업로드한 파일을 배열로 전송
+      imageFiles.forEach((file) => {
+        formData.append("image_url[]", file);
+      });
+  
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
           headers: {
@@ -135,7 +151,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           },
         });
         alert("서적 정보가 성공적으로 수정되었습니다.");
-        navigate(`/detail/${book_id}`);
+        navigate(0); // 🔥 수정 후 페이지 새로고침하여 초기화
       } else {
         await api.post("books/", formData, {
           headers: {
@@ -144,47 +160,68 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           },
         });
         alert("서적이 성공적으로 등록되었습니다.");
+        navigate('/'); // 등록 후 페이지 새로고침하여 초기화
       }
-
+  
       await fetchBooks();
-      navigate("/");
     } catch (error) {
       console.error("서적 등록/수정 오류:", error);
       alert("서적 등록/수정 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   // 수정 모드일 경우 기존 데이터 불러옴
   useEffect(() => {
-    if (!book_id) return; // 등록 모드면 실행 X
+    // book_id가 변경되면 모든 입력값 초기화
+    setTitle("");
+    setChatLink("");
+    setPrice("");
+    setMajor("");
+    setStatus("FOR_SALE");
+    setDescription("");
+    setImageFiles([]);
+    setUploadedImageUrls([]);
+  
+    if (!book_id) return; 
     setLoading(true);
-
+  
     const fetchBookData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await api.get(`books/${book_id}/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         const bookData = response.data;
+        console.log("📸 서버에서 받아온 이미지 URL:", bookData.image_url);
+  
         setTitle(bookData.title);
         setChatLink(bookData.chatLink);
         setPrice(String(bookData.price));
         setMajor(bookData.major);
         setStatus(bookData.status);
         setDescription(bookData.description);
-        setUploadedImageUrls(bookData.image_url || []);
+  
+        // 기존 S3 URL 유지
+        if (Array.isArray(bookData.image_url)) {
+          setUploadedImageUrls(bookData.image_url);
+        } else if (typeof bookData.image_url === "string") {
+          setUploadedImageUrls([bookData.image_url]);
+        } else {
+          setUploadedImageUrls([]);
+        }
+  
       } catch (error) {
         console.error("서적 정보 불러오기 오류:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchBookData();
-  }, [book_id]);
+  }, [book_id]);    
 
   return (
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
@@ -206,24 +243,31 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           )}
         </div>
         <div className="flex gap-2">
-          {uploadedImageUrls.map((src, index) => (
-            <img key={index} src={src} alt="preview" className="w-18 h-18 object-cover rounded-md border border-gray-300 aspect-square" />
+        {Array.isArray(uploadedImageUrls) &&
+          uploadedImageUrls.map((src, index) => (
+            <img
+              key={index}
+              src={src}
+              alt="preview"
+              className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square"
+            />
           ))}
-          {uploadedImageUrls.length < 3 && (
-            <label className="w-18 h-18 flex flex-col items-center justify-center border rounded-md cursor-pointer bg-gray-100">
-              <Upload className="w-5 h-5 text-gray-500" />
-              <p className="text-gray-400 text-xs">{uploadedImageUrls.length}/3</p>
-              <input 
-                type="file"
-                multiple
-                className="hidden"
-                onChange={handleImageUpload}
-                accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera"
-              />
-            </label>
-          )}
+
+        {Array.isArray(uploadedImageUrls) && uploadedImageUrls.length < 3 && (
+          <label className="w-18 h-18 flex flex-col items-center justify-center border border-gray-300 rounded-md cursor-pointer bg-gray-100">
+            <Upload className="w-5 h-5 text-gray-500" />
+            <p className="text-gray-400 text-xs">{uploadedImageUrls.length}/3</p>
+            <input
+              type="file"
+              multiple
+              className="hidden"
+              onChange={handleImageUpload}
+              accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera"
+            />
+          </label>
+        )}
         </div>
-        {/* {error.image && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.image}</p>} */}
+        {/* {error.image && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.image}</p>} */}
       </div>
 
       {/* 책 제목 입력 */}
@@ -236,7 +280,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setTitle(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.title && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.title}</p>} */}
+        {/* {error.title && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
@@ -249,7 +293,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setPrice(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.price && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.price}</p>} */}
+        {/* {error.price && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.price}</p>} */}
       </div>
 
       {/* 전공 선택 (Dropdown) */}
@@ -259,7 +303,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           <select
             value={major}
             onChange={(e) => setMajor(e.target.value)}
-            className="appearance-none w-full p-3 border rounded-lg pr-10"
+            className="appearance-none w-full p-3 border border-gray-300 rounded-lg pr-10"
           >
             <option value="">전공을 선택하세요</option>
             {majors.map((m) => (
@@ -311,7 +355,7 @@ const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => 
           onChange={(e) => setChatLink(e.target.value)}
           className={`w-full p-3 border rounded-md border-gray-300`}
         />
-        {/* {error.chatLink && <p className="text[#ED7E7F] text-sm mt-1 pl-1">{error.chatLink}</p>} */}
+        {/* {error.chatLink && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.chatLink}</p>} */}
       </div>
 
       {/* 등록 / 수정 버튼 */}

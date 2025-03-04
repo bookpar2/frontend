@@ -11,19 +11,19 @@ const usePostsStore = create<PostsState>((set) => ({
     set({ loading: true, error: null });
   
     try {
-      const response = await api.get("books/");
+      const response = await api.get("books/all");
   
       const apiBooks = response.data.map((book: any) => ({
         book_id: book.id,
+        images: book.images.map((img: any) => img.image_url) || [],
         title: book.title,
-        chatLink: book.chatLink,
         price: book.price,
-        description: book.description,
         saleStatus: book.status,
+        description: book.description,
         seller: book.seller,
         seller_name: book.seller_name,
-        image_url: book.image_url ? [book.image_url] : [],
-      }));
+        chatLink: book.chatLink,
+      }));         
   
       set({ books: apiBooks, loading: false });
     } catch (error) {
