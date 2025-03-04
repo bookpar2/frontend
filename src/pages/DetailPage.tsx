@@ -45,7 +45,7 @@ function DetailPage() {
           <img src={`${book.image_url}`} />
         </div>
         
-        <div className="flex justify-between border-b py-3">
+        <div className="flex justify-between border-b border-gray-300 py-3">
           <div className="flex space-x-1 items-center">
             <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
             <span className="text-gray-800 font-medium">{book.seller_name}</span>

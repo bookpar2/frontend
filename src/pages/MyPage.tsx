@@ -56,7 +56,7 @@ function MyPage() {
   return (
     <div className="max-w-md min-h-screen flex flex-col mx-auto items-center pt-20 sm:pt-18">
       {/* 사용자 정보 */}
-      <div className="w-full px-4 pb-6 sm:pt-4 border-b">
+      <div className="w-full px-4 pb-6 sm:pt-4 border-b border-gray-300">
         <section className="w-full border border-[#617EF1] rounded-2xl max-w-md p-8 space-y-4">
           <article className="flex space-x-4">
             <div className="font-bold">이름</div>
