@@ -57,10 +57,10 @@ function LoginPage() {
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border-[#ED7E7F]' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
+            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border--[#ED7E7F]' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
           />
           {errorMessage && !validateEmail(email) && (
-            <p className="text-[#ED7E7F] text-sm mt-2">{errorMessage}</p>
+            <p className="text--[#ED7E7F] text-sm mt-2">{errorMessage}</p>
           )}
         </div>
 
@@ -88,7 +88,7 @@ function LoginPage() {
       </form>
 
       {errorMessage && validateEmail(email) && (
-        <p className="text[#ED7E7F] text-sm mt-4">{errorMessage}</p>
+        <p className="text-[#ED7E7F] text-sm mt-4">{errorMessage}</p>
       )}
 
       {/* 회원가입 안내 */}
