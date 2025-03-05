@@ -94,14 +94,14 @@ function SellPage() {
       formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
-      formData.append("status", status);
+      formData.append("status", JSON.stringify(status));
   
-      // 남아있는 이미지들만 업로드
+      // 파일 배열 전송 (images[])
       imageFiles.forEach((file) => {
-        formData.append("images", file);
+        formData.append("images", file); // 배열 형식으로 전송
       });
 
-      // console.log("전송할 FormData:", [...formData.entries()]);
+      console.log("전송할 FormData:", [...formData.entries()]);
 
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
