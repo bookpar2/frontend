@@ -153,14 +153,6 @@ function RegisterPage() {
     if (!password) tempErrors.password = "비밀번호를 입력해 주세요.";
     if (password !== confirmPassword) tempErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
 
-    if (!/^[가-힣\s]+$/.test(name)) tempErrors.name = "이름은 한글로 입력해 주세요.";
-    if (!/^[0-9]{10}$/.test(studentId)) tempErrors.studentId = "학번은 10자리 숫자 형식으로 입력해 주세요.";
-    if (!majors.includes(major)) tempErrors.major = "전공을 선택해 주세요.";
-    if (!validateEmail(email)) tempErrors.email = "이메일 형식이 올바르지 않습니다 (@tukorea.ac.kr 도메인 사용)";
-    if (password.length < 8) tempErrors.password = "비밀번호는 8자리 이상이어야 합니다.";
-    if (password !== confirmPassword) tempErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-    if (!isCheckingCode) tempErrors.verificationCode = "인증코드가 일치하지 않습니다. 다시 시도해 주세요.";
-
     setErrors(tempErrors);
 
     // 오류가 없으면 회원가입 요청
@@ -320,7 +312,7 @@ function RegisterPage() {
         {/* 회원가입 버튼 */}
         <button 
           type="submit"
-          className="w-full py-3 mb-12 text-white bg-[#617EF1] hover:bg-[#4B63C1] border rounded-full font-bold transition duration-200"
+          className="w-full py-3 mb-12 text-white bg-[#617EF1] hover:bg-[#4B63C1] border rounded-full font-bold transition duration-200 cursor-pointer"
           onClick={handleRegisterUser}
         >
           회원가입
