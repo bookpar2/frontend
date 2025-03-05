@@ -34,7 +34,7 @@ const useUserStore = create<UserState>((set) => ({
       isLoggedIn: !!userData.refresh,
     };
 
-    sessionStorage.setItem("user", JSON.stringify(newUserState)); // 🔹 sessionStorage에 저장
+    sessionStorage.setItem("user", JSON.stringify(newUserState)); // sessionStorage에 저장
     set(newUserState);
   },
 
