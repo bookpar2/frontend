@@ -20,6 +20,8 @@ function SellPage() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isEditMode = location.pathname.startsWith("/edit/");
+
   const majors = [
     "컴퓨터공학전공", "소프트웨어전공", "게임공학과", "인공지능학과",
     "SW자율전공", "자유전공학부", "전자공학전공", "임베디드시스템전공",
@@ -94,8 +96,6 @@ function SellPage() {
         formData.append("images", file);
       });
 
-      console.log("🚀 전송할 FormData:", [...formData.entries()]);
-
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
           headers: {
@@ -125,6 +125,40 @@ function SellPage() {
     }
   };
 
+  // 가격 유효성 검사
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+  
+    // 숫자와 소수점만 허용
+    if (!/^\d*\.?\d{0,2}$/.test(value)) return;
+  
+    // 앞에 0이 붙으면 제거 (01 → 1)
+    if (value.startsWith("0") && value.length > 1 && !value.includes(".")) {
+      value = value.replace(/^0+/, "");
+    }
+  
+    setPrice(value);
+  };
+  
+  // 카카오톡 오픈채팅 유효성 검사
+  const handleChatLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.trim();
+  
+    // "https://open.kakao.com/"으로 시작하지 않으면 입력 불가
+    if (!value.startsWith("https://open.kakao.com/")) {
+      setChatLink("");
+      return;
+    }
+  
+    // 한국어 및 공백 포함 여부 확인
+    if (/[\u3131-\uD79D\s]/.test(value)) {
+      alert("카카오톡 오픈채팅 링크에는 한국어 및 공백을 포함할 수 없습니다.");
+      return;
+    }
+  
+    setChatLink(value);
+  };  
+
   // book_id 변경 시 기존 데이터 불러오기 (수정 모드)
   useEffect(() => {
     if (!book_id) return;
@@ -133,8 +167,14 @@ function SellPage() {
     const fetchBookData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          navigate("/login"); // 로그인 페이지로 리디렉션
+          return;
+        }
+
         const response = await api.get(`books/${book_id}/`, {
-          headers: { "Authorization": `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         const bookData = response.data;
@@ -151,8 +191,15 @@ function SellPage() {
         } else {
           setUploadedImageUrls([]);
         }
-      } catch (error) {
-        console.error("서적 정보 불러오기 오류:", error);
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          console.error("인증 오류:", error.response.data);
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          localStorage.removeItem("accessToken"); // 토큰 삭제
+          navigate("/login"); // 로그인 페이지로 이동
+        } else {
+          console.error("서적 정보 불러오기 오류:", error);
+        }
       } finally {
         setLoading(false);
       }
@@ -187,39 +234,25 @@ function SellPage() {
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
       {/* 이미지 업로드 */}
       <div>
-        <div className="flex justify-between items-center">
-          <label className="block text-sm font-medium pl-1 pb-1">사진 (최대 3장)</label>
-          {/* {allImages.length > 0 && (
-            <button onClick={() => handleRemoveImage([]))} 
-              className="mt-2 px-3 py-1 text-sm text-white bg-red-500 rounded-md">
-              RESET
-            </button>
-          )} */}
-        </div>
+        <label className="block text-sm font-medium pl-1 pb-1">사진 (최대 3장)</label>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
             <div key={index} className="relative">
-              <img src={typeof src === "string" ? src : URL.createObjectURL(src)} alt="preview" 
-                className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square" />
-              <button 
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
-                onClick={() => handleRemoveImage(index)}
-              >
-                ×
-              </button>
+              <img src={src} alt="preview" className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square" />
+              {!isEditMode && (
+                <button
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                  onClick={() => handleRemoveImage(index)}
+                >
+                  ×
+                </button>
+              )}
             </div>
           ))}
-          {Array.isArray(uploadedImageUrls) && uploadedImageUrls.length < 3 && (
+          {!isEditMode && uploadedImageUrls.length < 3 && (
             <label className="w-18 h-18 flex flex-col items-center justify-center border border-gray-300 rounded-md cursor-pointer bg-gray-100">
               <Upload className="w-5 h-5 text-gray-500" />
-              <p className="text-gray-400 text-xs">{uploadedImageUrls.length}/3</p>
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                onChange={handleImageUpload}
-                accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera"
-              />
+              <input type="file" multiple className="hidden" onChange={handleImageUpload} accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera" />
             </label>
           )}
         </div>
@@ -242,13 +275,12 @@ function SellPage() {
       <div>
         <label className="block text-sm font-medium pl-1 pb-1">가격</label>
         <input
-          type="number"
+          type="text" // 숫자가 아닌 text로 설정하여 직접 처리
           placeholder="가격을 입력하세요"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className={`w-full p-3 border rounded-md border-gray-300`}
+          onChange={handlePriceChange}
+          className="w-full p-3 border rounded-md border-gray-300"
         />
-        {/* {error.price && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.price}</p>} */}
       </div>
 
       {/* 전공 선택 (Dropdown) */}
@@ -316,12 +348,11 @@ function SellPage() {
         <label className="block text-sm font-medium pl-1 pb-1">카카오톡 오픈채팅 링크</label>
         <input
           type="text"
-          placeholder="카카오톡 오픈채팅 링크를 입력하세요"
+          placeholder="https://open.kakao.com/"
           value={chatLink}
-          onChange={(e) => setChatLink(e.target.value)}
-          className={`w-full p-3 border rounded-md border-gray-300`}
+          onChange={handleChatLinkChange}
+          className="w-full p-3 border rounded-md border-gray-300"
         />
-        {/* {error.chatLink && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.chatLink}</p>} */}
       </div>
 
       {/* 등록 / 수정 버튼 */}
