@@ -41,7 +41,7 @@ api.interceptors.response.use(
 
       try {
         // 리프레시 토큰으로 새로운 액세스 토큰 요청
-        const response = await axios.post(`${productionDomain}/users/token/refresh/`, { refresh });
+        const response = await axios.post(`${productionDomain}users/token/refresh/`, { refresh });
 
         const newAccessToken = response.data.access;
 
