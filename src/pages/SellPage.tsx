@@ -135,7 +135,7 @@ function SellPage() {
     if (!/^\d*\.?\d{0,2}$/.test(value)) return;
   
     // 앞에 0이 붙으면 제거 (01 → 1)
-    if (value.startsWith("0") && value.length > 1 && !value.includes(".")) {
+    if (value.startsWith("0") && value.length > 1 && !value.includes(".") && value.length < 8) {
       value = value.replace(/^0+/, "");
     }
   
@@ -236,7 +236,7 @@ function SellPage() {
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
       {/* 이미지 업로드 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">사진 (최대 3장)</label>
+        <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
             <div key={index} className="relative">
