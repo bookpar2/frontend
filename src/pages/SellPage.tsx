@@ -233,12 +233,12 @@ function SellPage() {
       <div>
         <div className="flex justify-between">
           <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
-          <button 
+          {!isEditMode && <button 
             className="rounded-md bg-red-500 text-white px-2 text-xs cursor-pointer"
             onClick={handleResetImages}
           >
             RESET
-          </button>
+          </button>}
         </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
