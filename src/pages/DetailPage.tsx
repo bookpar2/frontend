@@ -53,8 +53,8 @@ function DetailPage() {
       });
 
       alert("서적이 성공적으로 삭제되었습니다.");
-      await fetchBooks(); // 삭제 후 목록 갱신
       navigate("/"); // 메인 페이지로 이동
+      await fetchBooks(); // 삭제 후 목록 갱신
     } catch (error) {
       console.error("서적 삭제 오류:", error);
       alert("서적 삭제 중 오류가 발생했습니다.");

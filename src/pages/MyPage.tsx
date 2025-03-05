@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
 import PostCard from "../components/PostCard";
 import { Book } from "../dataType";
+import { useNavigate } from "react-router-dom";
 
 function MyPage() {
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     name: "",
     student_id: "",
@@ -46,7 +48,15 @@ function MyPage() {
         }));
 
         setBooks(booksData);
-      } catch (error) {
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          console.error("인증 오류:", error.response.data);
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          localStorage.removeItem("accessToken"); // 토큰 삭제
+          navigate("/login"); // 로그인 페이지로 이동
+        } else {
+          console.error("서적 정보 불러오기 오류:", error);
+        }
         console.error("내 서적 불러오기 오류:", error);
         setError("데이터를 불러오는 중 문제가 발생했습니다.");
       } finally {
