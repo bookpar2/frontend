@@ -145,21 +145,15 @@ function SellPage() {
   // 카카오톡 오픈채팅 유효성 검사
   const handleChatLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.trim();
-  
-    // "https://open.kakao.com/"으로 시작하지 않으면 입력 불가
-    if (!value.startsWith("https://open.kakao.com/")) {
+    
+    // 정규식을 사용하여 오픈채팅 링크 부분만 추출
+    const match = value.match(/https:\/\/open\.kakao\.com\/o\/\S+/);
+    if (match) {
+      setChatLink(match[0]);
+    } else {
       setChatLink("");
-      return;
     }
-  
-    // 한국어 및 공백 포함 여부 확인
-    if (/[\u3131-\uD79D\s]/.test(value)) {
-      alert("카카오톡 오픈채팅 링크에는 한국어 및 공백을 포함할 수 없습니다.");
-      return;
-    }
-  
-    setChatLink(value);
-  };  
+  };
 
   // book_id 변경 시 기존 데이터 불러오기 (수정 모드)
   useEffect(() => {
