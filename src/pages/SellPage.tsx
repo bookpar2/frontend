@@ -73,30 +73,35 @@ function SellPage() {
 
   // 서적 등록 API 요청
   const handleSubmit = async () => {
+    if (!title || !chatLink || !price || !major || !description) {
+      alert("모든 필드를 입력해 주세요.");
+      return;
+    }
+  
     if (uploadedImageUrls.length === 0 && imageFiles.length === 0) {
       alert("최소 1개의 이미지를 업로드해야 합니다.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const token = localStorage.getItem("accessToken");
       const formData = new FormData();
-
+  
       formData.append("title", title);
       formData.append("chatLink", chatLink);
       formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
       formData.append("status", status);
-
-      // 새로 업로드된 이미지 추가
+  
+      // 남아있는 이미지들만 업로드
       imageFiles.forEach((file) => {
         formData.append("images", file);
       });
 
-      // console.log("전송할 FormData:", [...formData.entries()]);
+      console.log("전송할 FormData:", [...formData.entries()]);
 
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
@@ -117,7 +122,7 @@ function SellPage() {
         alert("서적이 성공적으로 등록되었습니다.");
         navigate("/");
       }
-
+  
       await fetchBooks();
     } catch (error) {
       console.error("서적 등록/수정 오류:", error);
@@ -125,7 +130,7 @@ function SellPage() {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   // 가격 유효성 검사
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,12 +211,8 @@ function SellPage() {
 
   // 이미지 삭제 핸들러
   const handleRemoveImage = (index: number) => {
-    if (index < uploadedImageUrls.length) {
-      setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      const newIndex = index - uploadedImageUrls.length;
-      setImageFiles((prev) => prev.filter((_, i) => i !== newIndex));
-    }
+    setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
+    setImageFiles((prev) => prev.filter((_, i) => i !== index - uploadedImageUrls.length));
   };
 
   useEffect(() => {
