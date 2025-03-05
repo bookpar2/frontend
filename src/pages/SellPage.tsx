@@ -101,7 +101,7 @@ function SellPage() {
         formData.append("images", file);
       });
 
-      console.log("전송할 FormData:", [...formData.entries()]);
+      // console.log("전송할 FormData:", [...formData.entries()]);
 
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
@@ -211,10 +211,16 @@ function SellPage() {
 
   // 이미지 삭제 핸들러
   const handleRemoveImage = (index: number) => {
-    setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
-    setImageFiles((prev) => prev.filter((_, i) => i !== index - uploadedImageUrls.length));
+    if (index < uploadedImageUrls.length) {
+      // 업로드된 이미지 삭제
+      setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      // 새로 추가한 이미지 삭제
+      const adjustedIndex = index - uploadedImageUrls.length;
+      setImageFiles((prev) => prev.filter((_, i) => i !== adjustedIndex));
+    }
   };
-
+  
   useEffect(() => {
     setImageFiles([]);
     setUploadedImageUrls([]);
