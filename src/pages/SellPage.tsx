@@ -94,7 +94,7 @@ function SellPage() {
       formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
-      formData.append("status", JSON.stringify(status));
+      formData.append("status", String(status));
   
       // 파일 배열 전송 (images[])
       imageFiles.forEach((file) => {
