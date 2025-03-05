@@ -14,7 +14,7 @@ function SellPage() {
   const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [chatLink, setChatLink] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
   const [major, setMajor] = useState("");
   const [status, setStatus] = useState("FOR_SALE");
   const [description, setDescription] = useState("");
@@ -86,7 +86,7 @@ function SellPage() {
 
       formData.append("title", title);
       formData.append("chatLink", chatLink);
-      formData.append("price", price);
+      formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
       formData.append("status", status);
@@ -95,6 +95,8 @@ function SellPage() {
       imageFiles.forEach((file) => {
         formData.append("images", file);
       });
+
+      console.log("🚀 전송할 FormData:", [...formData.entries()]);
 
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
@@ -137,7 +139,7 @@ function SellPage() {
       value = value.replace(/^0+/, "");
     }
   
-    setPrice(value);
+    setPrice(Number(value));
   };
   
   // 카카오톡 오픈채팅 유효성 검사
@@ -181,7 +183,7 @@ function SellPage() {
 
         setTitle(bookData.title);
         setChatLink(bookData.chatLink);
-        setPrice(String(bookData.price));
+        setPrice(bookData.price);
         setMajor(bookData.major);
         setStatus(bookData.status);
         setDescription(bookData.description);
@@ -223,7 +225,7 @@ function SellPage() {
     setUploadedImageUrls([]);
     setTitle("");
     setChatLink("");
-    setPrice("");
+    setPrice(0);
     setMajor("");
     setStatus("FOR_SALE");
     setDescription("");
