@@ -96,7 +96,7 @@ function SellPage() {
         formData.append("images", file);
       });
 
-      console.log("🚀 전송할 FormData:", [...formData.entries()]);
+      // console.log("전송할 FormData:", [...formData.entries()]);
 
       if (book_id) {
         await api.patch(`books/${book_id}/`, formData, {
