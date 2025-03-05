@@ -210,15 +210,9 @@ function SellPage() {
   }, [book_id]);
 
   // 이미지 삭제 핸들러
-  const handleRemoveImage = (index: number) => {
-    if (index < uploadedImageUrls.length) {
-      // 업로드된 이미지 삭제
-      setUploadedImageUrls((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      // 새로 추가한 이미지 삭제
-      const adjustedIndex = index - uploadedImageUrls.length;
-      setImageFiles((prev) => prev.filter((_, i) => i !== adjustedIndex));
-    }
+  const handleResetImages = () => {
+    setUploadedImageUrls([]);
+    setImageFiles([]);
   };
   
   useEffect(() => {
@@ -237,19 +231,19 @@ function SellPage() {
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
       {/* 이미지 업로드 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
+        <div className="flex justify-between">
+          <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
+          <button 
+            className="rounded-md bg-red-500 text-white px-2 text-xs cursor-pointer"
+            onClick={handleResetImages}
+          >
+            RESET
+          </button>
+        </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
             <div key={index} className="relative">
               <img src={src} alt="preview" className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square" />
-              {!isEditMode && (
-                <button
-                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
-                  onClick={() => handleRemoveImage(index)}
-                >
-                  ×
-                </button>
-              )}
             </div>
           ))}
           {!isEditMode && uploadedImageUrls.length < 3 && (
