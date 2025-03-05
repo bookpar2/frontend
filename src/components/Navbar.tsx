@@ -106,7 +106,7 @@ function Navbar() {
 
       {/* Dropdown Menu */}
       {menuOpen && (
-        <div ref={menuRef} className="absolute top-16 right-6 w-48 bg-white shadow-lg border rounded-lg z-10 md:hidden">
+        <div ref={menuRef} className="absolute top-16 right-6 w-48 bg-white shadow-lg border border-gray-300 rounded-lg z-10 md:hidden">
           {isLoggedIn ? (
             <ul className="flex flex-col">
               <li>

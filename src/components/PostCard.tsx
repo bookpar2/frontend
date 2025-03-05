@@ -13,7 +13,7 @@ function PostCard(props: PostCardProps) {
       {/* 책 이미지 */}
       <div className="w-full aspect-square bg-white rounded-md mb-3 flex justify-center items-center overflow-hidden">
         <img 
-          src={props.image_url && props.image_url.length > 0 ? props.image_url[0] : ""}
+          src={props.image_url}
           alt={props.title} 
           className="w-full h-full object-cover rounded-md"
         />

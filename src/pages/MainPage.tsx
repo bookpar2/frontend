@@ -37,7 +37,7 @@ function MainPage() {
                 title={book.title}
                 price={book.price}
                 saleStatus={book.saleStatus}
-                image_url={book.image_url}
+                image_url={book.images[0]}
               />
             ))}
           </div>
