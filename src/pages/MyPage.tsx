@@ -71,7 +71,7 @@ function MyPage() {
     <div className="max-w-md min-h-screen flex flex-col mx-auto items-center pt-20 sm:pt-18">
       {/* 사용자 정보 */}
       <div className="w-full px-4 pb-6 sm:pt-4 border-b border-gray-300">
-        <section className="w-full border border-[#617EF1] rounded-2xl max-w-md p-8 space-y-4">
+        <section className="w-full border border-primary rounded-2xl max-w-md p-8 space-y-4">
           <article className="flex space-x-4">
             <div className="font-bold">이름</div>
             <div>{userInfo.name}</div>
@@ -84,7 +84,7 @@ function MyPage() {
             <div className="font-bold">이메일</div>
             <div>{userInfo.school_email}</div>
           </article>
-        </section>  
+        </section>
       </div>
 
       {/* 사용자가 등록한 서적 목록 */}
@@ -103,7 +103,7 @@ function MyPage() {
                 title={book.title}
                 price={book.price}
                 saleStatus={book.saleStatus}
-                image_url={book.images[0]} 
+                image_url={book.images[0]}
               />
             ))}
           </div>

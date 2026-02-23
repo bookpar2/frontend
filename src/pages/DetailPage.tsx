@@ -65,8 +65,15 @@ function DetailPage() {
     <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-24 pb-8">
       <div>
         {/* 이미지 슬라이드 */}
-        <div {...handlers} className="relative flex aspect-square bg-blue-100 p-6 rounded-lg text-center items-center overflow-hidden">
-          <img src={images[currentImageIndex]} className="w-full h-full object-cover rounded-lg" alt="Book Image" />
+        <div
+          {...handlers}
+          className="relative flex aspect-square bg-blue-100 p-6 rounded-lg text-center items-center overflow-hidden"
+        >
+          <img
+            src={images[currentImageIndex]}
+            className="w-full h-full object-cover rounded-lg"
+            alt="Book Image"
+          />
           {/* 좌우 화살표 버튼 */}
           {images.length > 1 && (
             <>
@@ -118,7 +125,7 @@ function DetailPage() {
       {/* 수정하기 / 판매자와 채팅하기 버튼 */}
       {book.seller === id ? (
         <button
-          className="w-full bg-white border border-[#617EF1] text-[#617EF1] py-3 rounded-full mt-3 hover:bg-[#617EF1] hover:text-white cursor-pointer"
+          className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3 hover:bg-primary hover:text-white cursor-pointer"
           onClick={() => navigate(`/edit/${book.book_id}`)}
         >
           수정하기
@@ -126,7 +133,7 @@ function DetailPage() {
       ) : (
         book.saleStatus !== "COMPLETED" && (
           <button
-            className="w-full bg-[#617EF1] text-white py-3 rounded-full mt-3 hover:bg-[#4B63C1]"
+            className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-[#4B63C1]"
             onClick={() => window.open(book.chatLink, "_blank")}
           >
             판매자와 채팅하기
