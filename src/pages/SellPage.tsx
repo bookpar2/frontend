@@ -4,8 +4,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
 import heic2any from "heic2any";
+import { majors } from "../constants/major";
 
-function SellPage() {
+const SellPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { book_id } = useParams<{ book_id?: string }>();
@@ -22,20 +23,10 @@ function SellPage() {
 
   const isEditMode = location.pathname.startsWith("/edit/");
 
-  const majors = [
-    "컴퓨터공학전공", "소프트웨어전공", "게임공학과", "인공지능학과",
-    "SW자율전공", "자유전공학부", "전자공학전공", "임베디드시스템전공",
-    "나노반도체공학전공", "반도체시스템전공", "기계공학과", "기계설계전공",
-    "지능형모빌리티전공", "메카트로닉스전공", "AI로봇전공", "신소재공학과",
-    "생명화학공학과", "전력응용시스템전공", "미래에너지시스템전공", "경영학전공",
-    "IT경영전공", "데이터사이언스경영전공", "산업디자인공학전공", "미디어디자인공학전공",
-    "지식융합학부"
-  ];
-
   const saleStatuses = [
     { value: "FOR_SALE", label: "판매 중" },
     { value: "IN_PROGRESS", label: "거래 중" },
-    { value: "COMPLETED", label: "거래 완료" }
+    { value: "COMPLETED", label: "거래 완료" },
   ];
 
   // 이미지 업로드 핸들러
@@ -77,25 +68,25 @@ function SellPage() {
       alert("모든 필드를 입력해 주세요.");
       return;
     }
-  
+
     if (uploadedImageUrls.length === 0 && imageFiles.length === 0) {
       alert("최소 1개의 이미지를 업로드해야 합니다.");
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const token = localStorage.getItem("accessToken");
       const formData = new FormData();
-  
+
       formData.append("title", title);
       formData.append("chatLink", chatLink);
       formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
       formData.append("status", String(status));
-  
+
       // 파일 배열 전송 (images[])
       imageFiles.forEach((file) => {
         formData.append("images", file); // 배열 형식으로 전송
@@ -122,7 +113,7 @@ function SellPage() {
         alert("서적이 성공적으로 등록되었습니다.");
         navigate("/");
       }
-  
+
       await fetchBooks();
     } catch (error) {
       console.error("서적 등록/수정 오류:", error);
@@ -130,33 +121,32 @@ function SellPage() {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   // 가격 유효성 검사
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-  
+
     // 숫자와 소수점만 허용
     if (!/^\d*\.?\d{0,2}$/.test(value)) return;
-  
+
     // 앞에 0이 붙으면 제거 (01 → 1)
     if (value.startsWith("0") && value.length > 1 && !value.includes(".") && value.length < 8) {
       value = value.replace(/^0+/, "");
     }
-  
+
     setPrice(Number(value));
   };
-  
+
   // 카카오톡 오픈채팅 유효성 검사
   const handleChatLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.trim();
-    
-    // 정규식을 사용하여 오픈채팅 링크 부분만 추출
-    const match = value.match(/https:\/\/open\.kakao\.com\/o\/\S+/);
-    if (match) {
-      setChatLink(match[0]);
-    } else {
-      setChatLink("");
+    setChatLink(e.target.value); // 그냥 입력 허용
+  };
+
+  const validateChatLink = () => {
+    const regex = /^https:\/\/open\.kakao\.com\/o\/\S+$/;
+    if (!regex.test(chatLink)) {
+      alert("올바른 카카오톡 오픈채팅 링크를 입력해주세요.");
     }
   };
 
@@ -214,7 +204,7 @@ function SellPage() {
     setUploadedImageUrls([]);
     setImageFiles([]);
   };
-  
+
   useEffect(() => {
     setImageFiles([]);
     setUploadedImageUrls([]);
@@ -225,31 +215,45 @@ function SellPage() {
     setStatus("FOR_SALE");
     setDescription("");
     setLoading(false);
-  }, [location])
+  }, [location]);
 
   return (
-    <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
+    <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-10">
       {/* 이미지 업로드 */}
       <div>
         <div className="flex justify-between">
-          <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
-          {!isEditMode && <button 
-            className="rounded-md bg-red-500 text-white px-2 text-xs cursor-pointer"
-            onClick={handleResetImages}
-          >
-            RESET
-          </button>}
+          <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
+            사진 (최소 1장, 최대 3장)
+          </label>
+          {!isEditMode && (
+            <button
+              className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
+              onClick={handleResetImages}
+            >
+              RESET
+            </button>
+          )}
         </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
             <div key={index} className="relative">
-              <img src={src} alt="preview" className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square" />
+              <img
+                src={src}
+                alt="preview"
+                className="w-14 h-14 object-cover rounded-lg border border-gray-700 aspect-square"
+              />
             </div>
           ))}
           {!isEditMode && uploadedImageUrls.length < 3 && (
-            <label className="w-18 h-18 flex flex-col items-center justify-center border border-gray-300 rounded-md cursor-pointer bg-gray-100">
-              <Upload className="w-5 h-5 text-gray-500" />
-              <input type="file" multiple className="hidden" onChange={handleImageUpload} accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera" />
+            <label className="w-14 h-14 flex flex-col items-center justify-center rounded-lg cursor-pointer bg-gray-100">
+              <Upload className="w-5 h-5 text-gray-600" />
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                onChange={handleImageUpload}
+                accept=".jpg, .jpeg, .png, .svg, image/*;capture=camera"
+              />
             </label>
           )}
         </div>
@@ -257,39 +261,47 @@ function SellPage() {
 
       {/* 책 제목 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">책 제목</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">책 제목</label>
         <input
           type="text"
           placeholder="책 제목을 입력하세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`w-full p-3 border rounded-md border-gray-300`}
+          className={`w-full p-3 border rounded-lg text-sm ${
+            title ? "border-primary" : "border-gray-700"
+          }`}
         />
-        {/* {error.title && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.title}</p>} */}
+        {/* {error.title && <p className="text-alert text-[10px] sm:text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">가격</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">가격</label>
         <input
-          type="text" // 숫자가 아닌 text로 설정하여 직접 처리
+          type="text"
           placeholder="가격을 입력하세요"
-          value={price}
+          value={price || ""}
           onChange={handlePriceChange}
-          className="w-full p-3 border rounded-md border-gray-300"
+          className={`w-full p-3 border rounded-lg text-sm ${
+            price ? "border-primary" : "border-gray-700"
+          }`}
         />
       </div>
 
       {/* 전공 선택 (Dropdown) */}
       <div className="mb-4">
-        <label className="block text-gray-700 pb-1 pl-1">전공</label>
+        <label className="block text-gray-900 pb-1 pl-1 text-[10px] sm:text-sm">전공</label>
         <div className="relative">
           <select
             value={major}
             onChange={(e) => setMajor(e.target.value)}
-            className="appearance-none w-full p-3 border border-gray-300 rounded-lg pr-10"
+            className={`appearance-none w-full p-3 border rounded-lg pr-10 text-xs ${
+              major ? "border-primary" : "border-gray-700"
+            }`}
           >
-            <option value="">전공을 선택하세요</option>
+            <option value="" className="text-gray-900 text-sm">
+              전공을 선택하세요
+            </option>
             {majors.map((m) => (
               <option key={m} value={m}>
                 {m}
@@ -298,8 +310,17 @@ function SellPage() {
           </select>
           {/* 화살표 아이콘 */}
           <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 text-gray-800"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
         </div>
@@ -308,21 +329,34 @@ function SellPage() {
       {/* 상태 선택 */}
       {book_id && (
         <div className="mb-4">
-          <label className="block text-gray-700 pb-1 pl-1">판매 상태</label>
+          <label className="block text-gray-900 pb-1 pl-1">판매 상태</label>
           <div className="relative">
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="appearance-none w-full p-3 border rounded-lg pr-10"
+              className={`appearance-none w-full p-3 border rounded-lg pr-10 text-xs ${
+                status ? "border-primary" : "border-gray-700"
+              }`}
             >
               {saleStatuses.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
               ))}
             </select>
             {/* 화살표 아이콘 */}
             <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-gray-600"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           </div>
@@ -330,34 +364,45 @@ function SellPage() {
       )}
 
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">상태 설명</label>
-        <textarea 
-          placeholder="책의 상태를 설명해 주세요(중고 여부, 필기 여부 등)"
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">상태 설명</label>
+        <textarea
+          placeholder="책의 상태를 설명해 주세요"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className={`w-full h-48 p-3 border rounded-md resize-none border-gray-300`}
+          className={`w-full h-48 p-3 border rounded-lg resize-none text-sm ${
+            description ? "border-primary" : "border-gray-700"
+          }`}
         />
-        {/* {error.description && <p className="text-error text-sm pl-1">{error.description}</p>} */}
+        {/* {error.description && <p className="text-error text-[10px] sm:text-sm pl-1">{error.description}</p>} */}
       </div>
 
       {/* 카카오톡 오픈채팅 링크 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">카카오톡 오픈채팅 링크</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
+          카카오톡 오픈채팅 링크
+        </label>
         <input
           type="text"
           placeholder="https://open.kakao.com/"
           value={chatLink}
           onChange={handleChatLinkChange}
-          className="w-full p-3 border rounded-md border-gray-300"
+          onBlur={validateChatLink}
+          className={`w-full p-3 border rounded-lg text-sm ${
+            chatLink ? "border-primary" : "border-gray-700"
+          }`}
         />
       </div>
 
       {/* 등록 / 수정 버튼 */}
-      <button className="w-full bg-[#617EF1] text-white py-3 rounded-full" onClick={handleSubmit} disabled={loading}>
+      <button
+        className="w-full bg-primary text-white py-3 rounded-full text-sm"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
         {loading ? "처리 중..." : book_id ? "수정하기" : "등록하기"}
       </button>
     </div>
   );
-}
+};
 
 export default SellPage;

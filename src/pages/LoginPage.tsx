@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import api from '../baseURL/baseURL';
-import useUserStore from '../stores/useUserStore';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import api from "../baseURL/baseURL";
+import useUserStore from "../stores/useUserStore";
+import { useNavigate } from "react-router-dom";
 
-function LoginPage() {
+const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const { setUser } = useUserStore();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [emailError, setEmailError] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const validateEmail = (email: string) => {
     const regex = /^[a-zA-Z0-9._%+-]+@tukorea.ac.kr$/;
@@ -16,14 +19,26 @@ function LoginPage() {
   };
 
   const moveToMainPage = () => {
-    navigate('/');
-  }
+    navigate("/");
+  };
+
+  // 이메일 입력 시 실시간 검사
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+
+    if (!validateEmail(value)) {
+      setEmailError("이메일 형식이 올바르지 않습니다 (@tukorea.ac.kr 도메인 사용)");
+    } else {
+      setEmailError("");
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 이메일 형식 최종 체크
     if (!validateEmail(email)) {
-      setErrorMessage('이메일 형식이 올바르지 않습니다 (@tukorea.ac.kr 도메인 사용)');
+      setEmailError("이메일 형식이 올바르지 않습니다 (@tukorea.ac.kr 도메인 사용)");
       return;
     }
 
@@ -33,67 +48,82 @@ function LoginPage() {
         password: password,
       });
 
-      setErrorMessage('');
-
+      setLoginError("");
       setUser(response.data);
+
       localStorage.setItem("refreshToken", response.data.refresh);
       localStorage.setItem("accessToken", response.data.access);
+
       moveToMainPage();
     } catch (error: any) {
-      setErrorMessage("아이디 또는 비밀번호가 맞지 않습니다.");
+      setLoginError("아이디 또는 비밀번호가 맞지 않습니다.");
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-10 pt-40 sm:pt-60">
+    <div className="h-full flex flex-col items-center justify-center px-10">
       <h1 className="text-2xl font-bold mb-8">로그인</h1>
+
       <form onSubmit={handleLogin} className="w-full max-w-sm">
         {/* 이메일 입력 */}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 pb-1 pl-1">학교 이메일</label>
+          <label htmlFor="email" className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-xs">
+            학교 이메일
+          </label>
+
           <input
             type="email"
             id="email"
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={`w-full p-3 border ${errorMessage && !validateEmail(email) ? 'border--[#ED7E7F]' : 'border-gray-300'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]`}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            className={`text-gray-700 w-full p-3 border ${
+              emailError ? "border-alert" : "border-gray-700"
+            } text-[10px] sm:text-xs rounded-lg focus:outline-none focus:border-primary`}
           />
-          {errorMessage && !validateEmail(email) && (
-            <p className="text--[#ED7E7F] text-sm mt-2">{errorMessage}</p>
+
+          {emailError && (
+            <p className="text-alert text-[10px] sm:text-xs mt-2 pl-2">{emailError}</p>
           )}
         </div>
 
         {/* 비밀번호 입력 */}
         <div className="mb-8">
-          <label htmlFor="password" className="block text-gray-700 pb-1 pl-1">비밀번호</label>
+          <label
+            htmlFor="password"
+            className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-xs"
+          >
+            비밀번호
+          </label>
+
           <input
             type="password"
             id="password"
             placeholder="비밀번호를 입력해 주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#617EF1]"
+            className="text-gray-700 text-[10px] sm:text-xs w-full p-3 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
           />
         </div>
 
         {/* 로그인 버튼 */}
         <button
           type="submit"
-          className="w-full py-3 text-[#617EF1] bg-white hover:bg-[#617EF1] hover:text-white border border-[#617EF1] rounded-full font-bold transition duration-200"
-          onClick={handleLogin}
+          className="text-sm w-full py-3 text-primary bg-white hover:bg-primary hover:text-white border border-primary rounded-full transition duration-200"
         >
           로그인
         </button>
       </form>
 
-      {errorMessage && validateEmail(email) && (
-        <p className="text-[#ED7E7F] text-sm mt-4">{errorMessage}</p>
-      )}
+      {/* 로그인 실패 에러 */}
+      {loginError && <p className="text-alert text-sm mt-4">{loginError}</p>}
 
       {/* 회원가입 안내 */}
-      <p className="mt-8 text-gray-600">
-        회원이 아니신가요? <a href="/register" className="text-[#617EF1] hover:underline">회원가입</a>
+      <p className="mt-8 flex gap-2 text-gray-900 font-medium text-xs sm:text-sm">
+        회원이 아니신가요?
+        <a href="/register" className="text-primary hover:underline">
+          회원가입
+        </a>
       </p>
     </div>
   );
