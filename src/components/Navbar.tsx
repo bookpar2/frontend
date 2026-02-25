@@ -87,7 +87,7 @@ const Navbar = () => {
               <Link
                 to="/sell"
                 className={`px-4 py-2 ${
-                  isActive("/sell") ? "text-primary bg-secondary" : "text-gray-700"
+                  isActive("/sell") ? "text-primary" : "text-gray-700"
                 } hover:bg-gray-100 rounded-lg`}
               >
                 판매하기
@@ -96,7 +96,7 @@ const Navbar = () => {
               <Link
                 to="/mypage"
                 className={`px-4 py-2 ${
-                  isActive("/mypage") ? "text-primary bg-secondary" : "text-gray-700"
+                  isActive("/mypage") ? "text-primary" : "text-gray-700"
                 } hover:bg-gray-100 rounded-lg`}
               >
                 마이페이지
@@ -105,7 +105,7 @@ const Navbar = () => {
               <Link
                 to="/logout"
                 className={`px-4 py-2 ${
-                  isActive("/logout") ? "text-primary bg-secondary" : "text-gray-700"
+                  isActive("/logout") ? "text-primary" : "text-gray-700"
                 } hover:bg-gray-100 rounded-lg`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -119,7 +119,7 @@ const Navbar = () => {
             <Link
               to="/login"
               className={`px-4 py-2 ${
-                isActive("/login") ? "text-primary bg-secondary" : "text-gray-700"
+                isActive("/login") ? "text-primary" : "text-gray-700"
               } hover:bg-gray-100 rounded-lg`}
             >
               로그인

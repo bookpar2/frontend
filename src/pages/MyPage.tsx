@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import api from "../baseURL/baseURL"; // API 요청을 위한 Axios 인스턴스
+import api from "../baseURL/baseURL";
 import PostCard from "../components/PostCard";
 import { Book } from "../dataType";
 import { useNavigate } from "react-router-dom";
 
-function MyPage() {
+const MyPage = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     name: "",
@@ -68,9 +68,9 @@ function MyPage() {
   }, []);
 
   return (
-    <div className="max-w-md min-h-screen flex flex-col mx-auto items-center pt-20 sm:pt-18">
+    <div className="max-w-md h-full flex flex-col mx-auto items-center">
       {/* 사용자 정보 */}
-      <div className="w-full px-4 pb-6 sm:pt-4 border-b border-gray-300">
+      <div className="w-full px-4 py-6 sm:py-4 border-b border-gray-300">
         <section className="w-full border border-primary rounded-2xl max-w-md p-8 space-y-4">
           <article className="flex space-x-4">
             <div className="font-bold">이름</div>
@@ -89,11 +89,11 @@ function MyPage() {
 
       {/* 사용자가 등록한 서적 목록 */}
       <section className="w-full flex flex-col items-center py-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-7">내가 등록한 중고서적</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-7">내가 등록한 중고서적</h2>
         {loading ? (
-          <p className="text-gray-500 mt-2">로딩 중...</p>
+          <p className="text-gray-600 mt-2">로딩 중...</p>
         ) : error ? (
-          <p className="text-red-500 mt-2">{error}</p>
+          <p className="text-alert mt-2">{error}</p>
         ) : books.length > 0 ? (
           <div className="px-3 mt-2 grid w-full grid-cols-2 gap-3 lg:gap-6 text-left justify-items-center">
             {books.map((book) => (
@@ -108,7 +108,7 @@ function MyPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-2">등록한 중고서적이 없습니다</p>
+          <p className="text-gray-600 mt-2">등록한 중고서적이 없습니다</p>
         )}
       </section>
     </div>

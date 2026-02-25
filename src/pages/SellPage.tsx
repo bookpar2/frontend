@@ -48,6 +48,7 @@ function SellPage() {
     "산업디자인공학전공",
     "미디어디자인공학전공",
     "지식융합학부",
+    "기타"
   ];
 
   const saleStatuses = [
@@ -167,14 +168,13 @@ function SellPage() {
 
   // 카카오톡 오픈채팅 유효성 검사
   const handleChatLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.trim();
+    setChatLink(e.target.value); // 그냥 입력 허용
+  };
 
-    // 정규식을 사용하여 오픈채팅 링크 부분만 추출
-    const match = value.match(/https:\/\/open\.kakao\.com\/o\/\S+/);
-    if (match) {
-      setChatLink(match[0]);
-    } else {
-      setChatLink("");
+  const validateChatLink = () => {
+    const regex = /^https:\/\/open\.kakao\.com\/o\/\S+$/;
+    if (!regex.test(chatLink)) {
+      alert("올바른 카카오톡 오픈채팅 링크를 입력해주세요.");
     }
   };
 
@@ -246,14 +246,16 @@ function SellPage() {
   }, [location]);
 
   return (
-    <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-28 sm:pt-40">
+    <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-10">
       {/* 이미지 업로드 */}
       <div>
         <div className="flex justify-between">
-          <label className="block text-sm font-medium pl-1 pb-1">사진 (최소 1장, 최대 3장)</label>
+          <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
+            사진 (최소 1장, 최대 3장)
+          </label>
           {!isEditMode && (
             <button
-              className="rounded-md bg-red-500 text-white px-2 text-xs cursor-pointer"
+              className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
               onClick={handleResetImages}
             >
               RESET
@@ -266,13 +268,13 @@ function SellPage() {
               <img
                 src={src}
                 alt="preview"
-                className="w-18 h-18 object-cover rounded-md border border-gray-200 aspect-square"
+                className="w-14 h-14 object-cover rounded-lg border border-gray-700 aspect-square"
               />
             </div>
           ))}
           {!isEditMode && uploadedImageUrls.length < 3 && (
-            <label className="w-18 h-18 flex flex-col items-center justify-center border border-gray-300 rounded-md cursor-pointer bg-gray-100">
-              <Upload className="w-5 h-5 text-gray-500" />
+            <label className="w-14 h-14 flex flex-col items-center justify-center rounded-lg cursor-pointer bg-gray-100">
+              <Upload className="w-5 h-5 text-gray-600" />
               <input
                 type="file"
                 multiple
@@ -287,39 +289,47 @@ function SellPage() {
 
       {/* 책 제목 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">책 제목</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">책 제목</label>
         <input
           type="text"
           placeholder="책 제목을 입력하세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`w-full p-3 border rounded-md border-gray-300`}
+          className={`w-full p-3 border rounded-lg text-sm ${
+            title ? "border-primary" : "border-gray-700"
+          }`}
         />
-        {/* {error.title && <p className="text-[#ED7E7F] text-sm mt-1 pl-1">{error.title}</p>} */}
+        {/* {error.title && <p className="text-[#ED7E7F] text-[10px] sm:text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">가격</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">가격</label>
         <input
-          type="text" // 숫자가 아닌 text로 설정하여 직접 처리
+          type="text"
           placeholder="가격을 입력하세요"
-          value={price}
+          value={price || ""}
           onChange={handlePriceChange}
-          className="w-full p-3 border rounded-md border-gray-300"
+          className={`w-full p-3 border rounded-lg text-sm ${
+            price ? "border-primary" : "border-gray-700"
+          }`}
         />
       </div>
 
       {/* 전공 선택 (Dropdown) */}
       <div className="mb-4">
-        <label className="block text-gray-700 pb-1 pl-1">전공</label>
+        <label className="block text-gray-900 pb-1 pl-1 text-[10px] sm:text-sm">전공</label>
         <div className="relative">
           <select
             value={major}
             onChange={(e) => setMajor(e.target.value)}
-            className="appearance-none w-full p-3 border border-gray-300 rounded-lg pr-10"
+            className={`appearance-none w-full p-3 border rounded-lg pr-10 text-xs ${
+              major ? "border-primary" : "border-gray-700"
+            }`}
           >
-            <option value="">전공을 선택하세요</option>
+            <option value="" className="text-gray-900 text-sm">
+              전공을 선택하세요
+            </option>
             {majors.map((m) => (
               <option key={m} value={m}>
                 {m}
@@ -330,7 +340,7 @@ function SellPage() {
           <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-gray-600"
+              className="w-5 h-5 text-gray-800"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -347,12 +357,14 @@ function SellPage() {
       {/* 상태 선택 */}
       {book_id && (
         <div className="mb-4">
-          <label className="block text-gray-700 pb-1 pl-1">판매 상태</label>
+          <label className="block text-gray-900 pb-1 pl-1">판매 상태</label>
           <div className="relative">
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="appearance-none w-full p-3 border rounded-lg pr-10"
+              className={`appearance-none w-full p-3 border rounded-lg pr-10 text-xs ${
+                status ? "border-primary" : "border-gray-700"
+              }`}
             >
               {saleStatuses.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -380,31 +392,38 @@ function SellPage() {
       )}
 
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">상태 설명</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">상태 설명</label>
         <textarea
-          placeholder="책의 상태를 설명해 주세요(중고 여부, 필기 여부 등)"
+          placeholder="책의 상태를 설명해 주세요"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className={`w-full h-48 p-3 border rounded-md resize-none border-gray-300`}
+          className={`w-full h-48 p-3 border rounded-lg resize-none text-sm ${
+            description ? "border-primary" : "border-gray-700"
+          }`}
         />
-        {/* {error.description && <p className="text-error text-sm pl-1">{error.description}</p>} */}
+        {/* {error.description && <p className="text-error text-[10px] sm:text-sm pl-1">{error.description}</p>} */}
       </div>
 
       {/* 카카오톡 오픈채팅 링크 입력 */}
       <div>
-        <label className="block text-sm font-medium pl-1 pb-1">카카오톡 오픈채팅 링크</label>
+        <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
+          카카오톡 오픈채팅 링크
+        </label>
         <input
           type="text"
           placeholder="https://open.kakao.com/"
           value={chatLink}
           onChange={handleChatLinkChange}
-          className="w-full p-3 border rounded-md border-gray-300"
+          onBlur={validateChatLink}
+          className={`w-full p-3 border rounded-lg text-sm ${
+            chatLink ? "border-primary" : "border-gray-700"
+          }`}
         />
       </div>
 
       {/* 등록 / 수정 버튼 */}
       <button
-        className="w-full bg-primary text-white py-3 rounded-full"
+        className="w-full bg-primary text-white py-3 rounded-full text-sm"
         onClick={handleSubmit}
         disabled={loading}
       >
