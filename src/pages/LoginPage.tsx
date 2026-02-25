@@ -67,7 +67,7 @@ const LoginPage = () => {
       <form onSubmit={handleLogin} className="w-full max-w-sm">
         {/* 이메일 입력 */}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-sm">
+          <label htmlFor="email" className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-xs">
             학교 이메일
           </label>
 
@@ -77,13 +77,13 @@ const LoginPage = () => {
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            className={`text-gray-700 w-full p-3 sm:p-4 border ${
+            className={`text-gray-700 w-full p-3 border ${
               emailError ? "border-alert" : "border-gray-700"
-            } text-sm rounded-lg focus:outline-none focus:border-primary`}
+            } text-[10px] sm:text-xs rounded-lg focus:outline-none focus:border-primary`}
           />
 
           {emailError && (
-            <p className="text-alert text-[10px] sm:text-sm mt-2 pl-2">{emailError}</p>
+            <p className="text-alert text-[10px] sm:text-xs mt-2 pl-2">{emailError}</p>
           )}
         </div>
 
@@ -91,7 +91,7 @@ const LoginPage = () => {
         <div className="mb-8">
           <label
             htmlFor="password"
-            className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-sm"
+            className="block text-gray-900 pb-1 pl-2 text-[10px] sm:text-xs"
           >
             비밀번호
           </label>
@@ -102,7 +102,7 @@ const LoginPage = () => {
             placeholder="비밀번호를 입력해 주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="text-gray-700 text-sm w-full p-3 sm:p-4 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
+            className="text-gray-700 text-[10px] sm:text-xs w-full p-3 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
           />
         </div>
 

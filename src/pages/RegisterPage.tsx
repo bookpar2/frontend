@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
+import { majors } from "../constants/major";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -22,34 +23,6 @@ const RegisterPage = () => {
     confirmPassword: "",
     verificationCode: "",
   });
-
-  const majors = [
-    "컴퓨터공학전공",
-    "소프트웨어전공",
-    "게임공학과",
-    "인공지능학과",
-    "SW자율전공",
-    "자유전공학부",
-    "전자공학전공",
-    "임베디드시스템전공",
-    "나노반도체공학전공",
-    "반도체시스템전공",
-    "기계공학과",
-    "기계설계전공",
-    "지능형모빌리티전공",
-    "메카트로닉스전공",
-    "AI로봇전공",
-    "신소재공학과",
-    "생명화학공학과",
-    "전력응용시스템전공",
-    "미래에너지시스템전공",
-    "경영학전공",
-    "IT경영전공",
-    "데이터사이언스경영전공",
-    "산업디자인공학전공",
-    "미디어디자인공학전공",
-    "지식융합학부",
-  ];
 
   const validateEmail = (email: string) => /^[a-zA-Z0-9._%+-]+@tukorea.ac.kr$/.test(email);
 
@@ -182,12 +155,12 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center px-10 pt-40 sm:pt-40">
+    <div className="h-full flex flex-col items-center justify-center px-10">
       <h1 className="text-2xl font-bold mb-8">회원가입</h1>
       <form onSubmit={handleRegister} className="w-full max-w-sm">
         {/* 이름 입력 */}
         <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 pb-1 pl-1">
+          <label htmlFor="name" className="block text-gray-900 text-[10px] sm:text-xs pb-1 pl-1">
             이름
           </label>
           <input
@@ -196,14 +169,17 @@ const RegisterPage = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력해 주세요"
-            className={`w-full p-3 border ${errors.name ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.name ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
           />
-          {errors.name && <p className="text-[#ED7E7F] text-xs mt-2">{errors.name}</p>}
+          {errors.name && <p className="text-alert text-xs mt-2">{errors.name}</p>}
         </div>
 
         {/* 학번 입력 */}
         <div className="mb-4">
-          <label htmlFor="student_id" className="block text-gray-700 pb-1 pl-1">
+          <label
+            htmlFor="student_id"
+            className="block text-gray-900 text-[10px] sm:text-xs pb-1 pl-1"
+          >
             학번
           </label>
           <input
@@ -212,21 +188,25 @@ const RegisterPage = () => {
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="학번을 입력해 주세요"
-            className={`w-full p-3 border ${errors.studentId ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.studentId ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
           />
-          {errors.studentId && <p className="text-[#ED7E7F] text-xs mt-2">{errors.studentId}</p>}
+          {errors.studentId && <p className="text-alert text-xs mt-2">{errors.studentId}</p>}
         </div>
 
         {/* 전공 선택 Dropdown */}
         <div className="mb-4">
-          <label className="block text-gray-700 pb-1 pl-1">전공</label>
+          <label className="block text-gray-900 pb-1 pl-1 text-[10px] sm:text-xs">전공</label>
           <div className="relative">
             <select
               value={major}
               onChange={(e) => setMajor(e.target.value)}
-              className={`appearance-none w-full p-3 border ${errors.major ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white pr-10`}
+              className={`appearance-none w-full p-3 border rounded-lg pr-10 text-xs ${
+                major ? "border-primary" : "border-gray-700"
+              }`}
             >
-              <option value="">전공을 선택하세요</option>
+              <option value="" className="text-gray-900 text-[10px] sm:text-xs">
+                전공을 선택하세요
+              </option>
               {majors.map((m) => (
                 <option key={m} value={m}>
                   {m}
@@ -237,7 +217,7 @@ const RegisterPage = () => {
             <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 text-gray-600"
+                className="w-5 h-5 text-gray-800"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -249,12 +229,12 @@ const RegisterPage = () => {
               </svg>
             </div>
           </div>
-          {errors.major && <p className="text-[#ED7E7F] text-xs mt-2">{errors.major}</p>}
+          {errors.major && <p className="text-alert text-xs mt-2">{errors.major}</p>}
         </div>
 
         {/* 이메일 입력 */}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 pb-1 pl-1">
+          <label htmlFor="email" className="block text-gray-900 text-[10px] sm:text-xs pb-1 pl-1">
             학교 이메일
           </label>
           <div className="flex">
@@ -264,23 +244,26 @@ const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="학교 이메일을 입력해 주세요"
-              className={`w-3/4 p-3 border mr-2 ${errors.email ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+              className={`w-4/5 p-3 border mr-2 ${errors.email ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
             />
             <button
               type="button"
               onClick={handleEmailVerification}
-              className={`w-1/4 text-white bg-primary hover:bg-[#4B63C1] rounded-lg text-sm ${isVerifying ? "cursor-none" : "cursor-pointer"}`}
+              className={`w-1/5 text-white bg-primary hover:bg-primary/80 rounded-lg text-[10px] sm:text-xs ${isVerifying ? "cursor-none" : "cursor-pointer"}`}
               disabled={isVerifying} // 요청 중일 때 버튼 비활성화
             >
               {isVerifying ? "전송 중..." : "인증"}
             </button>
           </div>
-          {errors.email && <p className="text-[#ED7E7F] text-xs mt-2">{errors.email}</p>}
+          {errors.email && <p className="text-alert text-xs mt-2">{errors.email}</p>}
         </div>
 
         {/* 인증코드 입력란 */}
         <div className="mb-4">
-          <label htmlFor="verificationCode" className="block text-gray-700 pb-1 pl-1">
+          <label
+            htmlFor="verificationCode"
+            className="block text-gray-900 text-[10px] sm:text-xs pb-1 pl-1"
+          >
             인증코드 입력
           </label>
           <div className="flex">
@@ -290,19 +273,19 @@ const RegisterPage = () => {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               placeholder="인증코드를 입력해 주세요"
-              className={`w-3/4 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+              className={`w-4/5 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
             />
             <button
               type="button"
               onClick={handleVerifyCode}
-              className={`w-1/4 text-white bg-primary hover:bg-[#4B63C1] rounded-lg text-sm ${isCheckingCode ? "cursor-none" : "cursor-pointer"}`}
+              className={`w-1/5 text-white bg-primary hover:bg-primary/80 rounded-lg text-[10px] sm:text-xs ${isCheckingCode ? "cursor-none" : "cursor-pointer"}`}
               disabled={isCheckingCode} // 요청 중일 때 버튼 비활성화
             >
               {isCheckingCode ? "전송 중..." : "확인"}
             </button>
           </div>
           {errors.verificationCode == "유효하지 않은 인증 코드입니다." ? (
-            <p className="text-[#ED7E7F] text-xs mt-2">{errors.verificationCode}</p>
+            <p className="text-alert text-xs mt-2">{errors.verificationCode}</p>
           ) : (
             ""
           )}
@@ -310,7 +293,10 @@ const RegisterPage = () => {
 
         {/* 비밀번호 입력 */}
         <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 pb-1 pl-1">
+          <label
+            htmlFor="password"
+            className="block text-gray-900 text-[10px] sm:text-[10px] sm:text-xs pb-1 pl-1"
+          >
             비밀번호
           </label>
           <input
@@ -319,14 +305,17 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호를 입력해 주세요"
-            className={`w-full p-3 border ${errors.password ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.password ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
           />
-          {errors.password && <p className="text-[#ED7E7F] text-xs mt-2">{errors.password}</p>}
+          {errors.password && <p className="text-alert text-xs mt-2">{errors.password}</p>}
         </div>
 
         {/* 비밀번호 확인 */}
         <div className="mb-8">
-          <label htmlFor="confirm_password" className="block text-gray-700 pb-1 pl-1">
+          <label
+            htmlFor="confirm_password"
+            className="block text-gray-900 text-[10px] sm:text-xs pb-1 pl-1"
+          >
             비밀번호 확인
           </label>
           <input
@@ -335,17 +324,17 @@ const RegisterPage = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="비밀번호를 다시 입력해 주세요"
-            className={`w-full p-3 border ${errors.confirmPassword ? "border-[#ED7E7F]" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-primary`}
+            className={`w-full p-3 border ${errors.confirmPassword ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
           />
           {errors.confirmPassword && (
-            <p className="text-[#ED7E7F] text-xs mt-2">{errors.confirmPassword}</p>
+            <p className="text-alert text-xs mt-2">{errors.confirmPassword}</p>
           )}
         </div>
 
         {/* 회원가입 버튼 */}
         <button
           type="submit"
-          className="w-full py-3 mb-12 text-white bg-primary hover:bg-[#4B63C1] border rounded-full font-bold transition duration-200 cursor-pointer"
+          className="w-full py-3 text-white text-sm bg-primary hover:bg-primary/80 rounded-full transition duration-200 cursor-pointer"
           onClick={handleRegisterUser}
         >
           회원가입
@@ -353,6 +342,6 @@ const RegisterPage = () => {
       </form>
     </div>
   );
-}
+};
 
 export default RegisterPage;

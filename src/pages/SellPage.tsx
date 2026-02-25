@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
 import heic2any from "heic2any";
+import { majors } from "../constants/major";
 
 const SellPage = () => {
   const navigate = useNavigate();
@@ -21,35 +22,6 @@ const SellPage = () => {
   const [loading, setLoading] = useState(false);
 
   const isEditMode = location.pathname.startsWith("/edit/");
-
-  const majors = [
-    "컴퓨터공학전공",
-    "소프트웨어전공",
-    "게임공학과",
-    "인공지능학과",
-    "SW자율전공",
-    "자유전공학부",
-    "전자공학전공",
-    "임베디드시스템전공",
-    "나노반도체공학전공",
-    "반도체시스템전공",
-    "기계공학과",
-    "기계설계전공",
-    "지능형모빌리티전공",
-    "메카트로닉스전공",
-    "AI로봇전공",
-    "신소재공학과",
-    "생명화학공학과",
-    "전력응용시스템전공",
-    "미래에너지시스템전공",
-    "경영학전공",
-    "IT경영전공",
-    "데이터사이언스경영전공",
-    "산업디자인공학전공",
-    "미디어디자인공학전공",
-    "지식융합학부",
-    "기타"
-  ];
 
   const saleStatuses = [
     { value: "FOR_SALE", label: "판매 중" },
@@ -299,7 +271,7 @@ const SellPage = () => {
             title ? "border-primary" : "border-gray-700"
           }`}
         />
-        {/* {error.title && <p className="text-[#ED7E7F] text-[10px] sm:text-sm mt-1 pl-1">{error.title}</p>} */}
+        {/* {error.title && <p className="text-alert text-[10px] sm:text-sm mt-1 pl-1">{error.title}</p>} */}
       </div>
 
       {/* 가격 입력 */}
@@ -431,6 +403,6 @@ const SellPage = () => {
       </button>
     </div>
   );
-}
+};
 
 export default SellPage;

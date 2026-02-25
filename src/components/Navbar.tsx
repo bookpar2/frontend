@@ -60,7 +60,7 @@ const Navbar = () => {
       if (menuRef.current && !menuRef.current.contains(target)) {
         setMenuOpen(false);
       }
-    }
+    };
 
     if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -116,14 +116,24 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <Link
-              to="/login"
-              className={`px-4 py-2 ${
-                isActive("/login") ? "text-primary" : "text-gray-700"
-              } hover:bg-gray-100 rounded-lg`}
-            >
-              로그인
-            </Link>
+            <>
+              <Link
+                to="/login"
+                className={`px-4 py-2 ${
+                  isActive("/login") ? "text-primary" : "text-gray-700"
+                } hover:bg-gray-100 rounded-lg`}
+              >
+                로그인
+              </Link>
+              <Link
+                to="/register"
+                className={`px-4 py-2 ${
+                  isActive("/register") ? "text-primary" : "text-gray-700"
+                } hover:bg-gray-100 rounded-lg`}
+              >
+                회원가입
+              </Link>
+            </>
           )}
         </nav>
 
