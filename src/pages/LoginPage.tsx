@@ -61,7 +61,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-10 pt-40 sm:pt-60">
+    <div className="h-full flex flex-col items-center justify-center px-10">
       <h1 className="text-2xl font-bold mb-8">로그인</h1>
 
       <form onSubmit={handleLogin} className="w-full max-w-sm">
@@ -77,9 +77,9 @@ const LoginPage = () => {
             placeholder="학교 이메일을 입력해 주세요"
             value={email}
             onChange={(e) => handleEmailChange(e.target.value)}
-            className={`text-gray-700 w-full p-4 border ${
+            className={`text-gray-700 w-full p-3 sm:p-4 border ${
               emailError ? "border-alert" : "border-gray-700"
-            } text-[10px] sm:text-sm rounded-lg focus:outline-none focus:border-primary`}
+            } text-sm rounded-lg focus:outline-none focus:border-primary`}
           />
 
           {emailError && (
@@ -102,7 +102,7 @@ const LoginPage = () => {
             placeholder="비밀번호를 입력해 주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="text-gray-700 text-[10px] sm:text-sm w-full p-4 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
+            className="text-gray-700 text-sm w-full p-3 sm:p-4 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
           />
         </div>
 

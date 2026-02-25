@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import usePostsStore from "../stores/usePostsStore";
 import PostCard from "../components/PostCard";
 
-function MainPage() {
+const MainPage = () => {
   const { books, fetchBooks, loading, error } = usePostsStore();
 
   useEffect(() => {
@@ -10,16 +10,16 @@ function MainPage() {
   }, [fetchBooks]);
 
   return (
-    <div className="min-h-screen">
+    <div className="h-full">
       {/* 배너 */}
-      <section className="w-full bg-secondary pt-16">
+      <section className="w-full bg-secondary">
         <div className="w-full max-w-screen-lg mx-auto">
           <img src="/images/home-banner.svg" alt="banner" className="w-full select-none" />
         </div>
       </section>
       {/* 판매 서적 목록 */}
       <section className="w-full flex flex-col items-center py-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-7">판매 중인 중고서적</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-7">판매 중인 중고서적</h2>
         {loading ? (
           <p className="text-gray-500 mt-2">로딩 중...</p>
         ) : error ? (
@@ -38,7 +38,7 @@ function MainPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 mt-2">판매 중인 중고서적이 없습니다</p>
+          <p className="text-gray-600 mt-2">판매 중인 중고서적이 없습니다</p>
         )}
       </section>
     </div>
