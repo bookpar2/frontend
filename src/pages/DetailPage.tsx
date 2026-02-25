@@ -4,9 +4,9 @@ import usePostsStore from "../stores/usePostsStore";
 import SalesStatus from "../components/SalesStatus";
 import useUserStore from "../stores/useUserStore";
 import api from "../baseURL/baseURL";
-import { useSwipeable } from "react-swipeable"; // 이미지 슬라이드를 위한 라이브러리
+import { useSwipeable } from "react-swipeable";
 
-function DetailPage() {
+const DetailPage = () => {
   const navigate = useNavigate();
   const { book_id } = useParams<{ book_id: string }>();
   const { books, fetchBooks } = usePostsStore();

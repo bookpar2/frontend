@@ -51,7 +51,7 @@ const Navbar = () => {
 
   // 바깥 클릭 닫기(토글 버튼 클릭은 제외)
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
 
       // 토글 버튼을 누른 경우는 바깥 클릭으로 처리하지 않음

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import api from "../baseURL/baseURL"; // Axios 인스턴스 가져오기
+import api from "../baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 
-function RegisterPage() {
+const RegisterPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [studentId, setStudentId] = useState("");

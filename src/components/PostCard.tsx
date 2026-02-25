@@ -2,7 +2,7 @@ import SalesStatus from "./SalesStatus";
 import { useNavigate } from "react-router-dom";
 import { PostCardProps } from "../dataType";
 
-function PostCard(props: PostCardProps) {
+const PostCard = (props: PostCardProps) => {
   const navigate = useNavigate();
 
   return (

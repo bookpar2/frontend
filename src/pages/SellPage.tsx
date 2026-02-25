@@ -5,7 +5,7 @@ import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
 import heic2any from "heic2any";
 
-function SellPage() {
+const SellPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { book_id } = useParams<{ book_id?: string }>();
