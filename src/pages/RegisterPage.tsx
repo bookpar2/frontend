@@ -155,7 +155,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-10">
+    <div className="h-full flex flex-col items-center justify-center px-10 py-20">
       <h1 className="text-2xl font-bold mb-8">회원가입</h1>
       <form onSubmit={handleRegister} className="w-full max-w-sm">
         {/* 이름 입력 */}

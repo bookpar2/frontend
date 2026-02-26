@@ -61,7 +61,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-10">
+    <div className="h-full flex flex-col items-center justify-center px-10 py-20">
       <h1 className="text-2xl font-bold mb-8">로그인</h1>
 
       <form onSubmit={handleLogin} className="w-full max-w-sm">
