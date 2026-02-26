@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 const DefaultLayout = () => {
   return (
-    <div className={`flex h-dvh flex-col`}>
+    <div className={`flex min-h-dvh flex-col`}>
       {/* Header */}
       <Navbar />
 
