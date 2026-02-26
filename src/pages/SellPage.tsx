@@ -267,7 +267,7 @@ const SellPage = () => {
           placeholder="책 제목을 입력하세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className={`w-full p-3 border rounded-lg text-sm ${
+          className={`w-full p-3 border rounded-lg text-sm placeholder:text-gray-700 ${
             title ? "border-primary" : "border-gray-700"
           }`}
         />
@@ -282,7 +282,7 @@ const SellPage = () => {
           placeholder="가격을 입력하세요"
           value={price || ""}
           onChange={handlePriceChange}
-          className={`w-full p-3 border rounded-lg text-sm ${
+          className={`w-full p-3 border rounded-lg text-sm placeholder:text-gray-700 ${
             price ? "border-primary" : "border-gray-700"
           }`}
         />
@@ -369,7 +369,7 @@ const SellPage = () => {
           placeholder="책의 상태를 설명해 주세요"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className={`w-full h-48 p-3 border rounded-lg resize-none text-sm ${
+          className={`w-full h-48 p-3 border rounded-lg resize-none text-sm placeholder:text-gray-700 ${
             description ? "border-primary" : "border-gray-700"
           }`}
         />
@@ -387,7 +387,7 @@ const SellPage = () => {
           value={chatLink}
           onChange={handleChatLinkChange}
           onBlur={validateChatLink}
-          className={`w-full p-3 border rounded-lg text-sm ${
+          className={`w-full p-3 border rounded-lg text-sm placeholder:text-gray-700 ${
             chatLink ? "border-primary" : "border-gray-700"
           }`}
         />
