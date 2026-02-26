@@ -79,7 +79,7 @@ const LoginPage = () => {
             onChange={(e) => handleEmailChange(e.target.value)}
             className={`text-gray-700 w-full p-3 border ${
               emailError ? "border-alert" : "border-gray-700"
-            } text-[10px] sm:text-xs rounded-lg focus:outline-none focus:border-primary`}
+            } text-[10px] sm:text-xs rounded-lg focus:outline-none focus:border-primary placeholder:text-gray-700`}
           />
 
           {emailError && (
@@ -102,7 +102,7 @@ const LoginPage = () => {
             placeholder="비밀번호를 입력해 주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="text-gray-700 text-[10px] sm:text-xs w-full p-3 border border-gray-700 rounded-lg focus:outline-none focus:border-primary"
+            className="text-gray-700 text-[10px] sm:text-xs w-full p-3 border border-gray-700 rounded-lg focus:outline-none focus:border-primary placeholder:text-gray-700"
           />
         </div>
 

@@ -169,7 +169,7 @@ const RegisterPage = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="이름을 입력해 주세요"
-            className={`w-full p-3 border ${errors.name ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+            className={`w-full p-3 border ${errors.name ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
           />
           {errors.name && <p className="text-alert text-xs mt-2">{errors.name}</p>}
         </div>
@@ -188,7 +188,7 @@ const RegisterPage = () => {
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="학번을 입력해 주세요"
-            className={`w-full p-3 border ${errors.studentId ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+            className={`w-full p-3 border ${errors.studentId ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
           />
           {errors.studentId && <p className="text-alert text-xs mt-2">{errors.studentId}</p>}
         </div>
@@ -244,7 +244,7 @@ const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="학교 이메일을 입력해 주세요"
-              className={`w-4/5 p-3 border mr-2 ${errors.email ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+              className={`w-4/5 p-3 border mr-2 ${errors.email ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
             />
             <button
               type="button"
@@ -273,7 +273,7 @@ const RegisterPage = () => {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               placeholder="인증코드를 입력해 주세요"
-              className={`w-4/5 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+              className={`w-4/5 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
             />
             <button
               type="button"
@@ -305,7 +305,7 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호를 입력해 주세요"
-            className={`w-full p-3 border ${errors.password ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+            className={`w-full p-3 border ${errors.password ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
           />
           {errors.password && <p className="text-alert text-xs mt-2">{errors.password}</p>}
         </div>
@@ -324,7 +324,7 @@ const RegisterPage = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="비밀번호를 다시 입력해 주세요"
-            className={`w-full p-3 border ${errors.confirmPassword ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs`}
+            className={`w-full p-3 border ${errors.confirmPassword ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
           />
           {errors.confirmPassword && (
             <p className="text-alert text-xs mt-2">{errors.confirmPassword}</p>
