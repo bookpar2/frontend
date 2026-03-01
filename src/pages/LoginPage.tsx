@@ -118,16 +118,20 @@ const LoginPage = () => {
       {/* 로그인 실패 에러 */}
       {loginError && <p className="text-alert text-sm mt-4">{loginError}</p>}
 
+      {/* 비밀번호 재설정 안내 */}
+      <p className="mt-8 flex gap-2 text-gray-700 font-medium text-xs sm:text-sm">
+        비밀번호를 잊으셨나요?
+        <a href="/password" className="text-primary hover:underline">
+          비밀번호 재설정
+        </a>
+      </p>
+
       {/* 회원가입 안내 */}
-      <p className="mt-8 flex gap-2 text-gray-900 font-medium text-xs sm:text-sm">
+      <p className="mt-2 flex gap-2 text-gray-700 font-medium text-xs sm:text-sm">
         회원이 아니신가요?
         <a href="/register" className="text-primary hover:underline">
           회원가입
         </a>
-      </p>
-
-      <p className="font-medium text-center text-xs text-gray-700 pt-3">
-        비밀번호 변경 문의는 인스타그램 @27th_curve로 DM주세요
       </p>
     </div>
   );

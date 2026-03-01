@@ -12,6 +12,7 @@ import useUserStore from "./stores/useUserStore";
 import DefaultLayout from "./layouts/DefaultLayout";
 
 import "./App.css";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -21,7 +22,20 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isLoggedIn } = useUserStore();
   if (!isLoggedIn) return <Navigate to="/login" replace />;
   return children;
+};
+
+interface PublicOnlyRouteProps {
+  children: ReactNode;
 }
+
+// 로그인한 사용자는 접근 못하게 하는 라우트
+const PublicOnlyRoute = ({ children }: PublicOnlyRouteProps) => {
+  const { isLoggedIn } = useUserStore();
+
+  if (isLoggedIn) return <Navigate to="/" replace />;
+
+  return children;
+};
 
 const App = () => {
   return (
@@ -31,8 +45,33 @@ const App = () => {
           <Route element={<DefaultLayout />}>
             <Route path="/" element={<MainPage />} />
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            {/* 로그인 상태가 아닐 경우에만 접근 가능 */}
+            <Route
+              path="/login"
+              element={
+                <PublicOnlyRoute>
+                  <LoginPage />
+                </PublicOnlyRoute>
+              }
+            />
+
+            <Route
+              path="/password"
+              element={
+                <PublicOnlyRoute>
+                  <ResetPasswordPage />
+                </PublicOnlyRoute>
+              }
+            />
+
+            <Route
+              path="/register"
+              element={
+                <PublicOnlyRoute>
+                  <RegisterPage />
+                </PublicOnlyRoute>
+              }
+            />
 
             {/* 로그인한 사용자만 */}
             <Route
@@ -72,6 +111,6 @@ const App = () => {
       </div>
     </Router>
   );
-}
+};
 
 export default App;

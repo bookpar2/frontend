@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 import { majors } from "../constants/major";
+import { validateEmail } from "../utils/email";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -23,8 +24,6 @@ const RegisterPage = () => {
     confirmPassword: "",
     verificationCode: "",
   });
-
-  const validateEmail = (email: string) => /^[a-zA-Z0-9._%+-]+@tukorea.ac.kr$/.test(email);
 
   // 이메일 인증 요청 (API 호출)
   const handleEmailVerification = async () => {
