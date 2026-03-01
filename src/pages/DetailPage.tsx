@@ -62,7 +62,7 @@ const DetailPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-4 space-y-4 bg-white pt-24 pb-8">
+    <div className="h-full flex flex-col justify-between max-w-md mx-auto px-4 space-y-4 bg-white py-8">
       <div>
         {/* 이미지 슬라이드 */}
         <div
@@ -71,7 +71,7 @@ const DetailPage = () => {
         >
           <img
             src={images[currentImageIndex]}
-            className="w-full h-full object-cover rounded-lg"
+            className="w-full object-contain rounded-lg"
             alt="Book Image"
           />
           {/* 좌우 화살표 버튼 */}
@@ -101,11 +101,11 @@ const DetailPage = () => {
         <div className="flex justify-between border-b border-gray-300 py-3">
           <div className="flex space-x-1 items-center">
             <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
-            <span className="text-gray-800 font-medium">{book.seller_name}</span>
+            <span className="text-gray-900 font-medium">{book.seller_name}</span>
           </div>
           {book.seller === id && (
             <button
-              className="mr-2 px-3 py-1 text-sm text-white bg-red-500 rounded-md cursor-pointer"
+              className="mr-2 px-3 py-1 text-sm text-white bg-alert rounded-md cursor-pointer"
               onClick={handleDelete}
             >
               삭제하기
@@ -117,8 +117,8 @@ const DetailPage = () => {
         <div className="p-4 rounded-lg">
           <SalesStatus saleStatus={book.saleStatus} />
           <h3 className="text-lg font-semibold mt-2">{book.title}</h3>
-          <p className="text-gray-500 text-lg mb-6">{book.price.toLocaleString()}원</p>
-          <p className="text-sm text-gray-700 mt-2">{book.description}</p>
+          <p className="text-gray-700 text-lg mb-6">{book.price.toLocaleString()}원</p>
+          <p className="min-h-40 text-sm text-gray-900 mt-2">{book.description}</p>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ const DetailPage = () => {
       ) : (
         book.saleStatus !== "COMPLETED" && (
           <button
-            className="w-full bg-primary text-white py-3 rounded-full mt-3 hover:bg-[#4B63C1]"
+            className="w-full bg-primary text-white py-3 rounded-full hover:bg-primary/80"
             onClick={() => window.open(book.chatLink, "_blank")}
           >
             판매자와 채팅하기
@@ -142,6 +142,6 @@ const DetailPage = () => {
       )}
     </div>
   );
-}
+};
 
 export default DetailPage;
