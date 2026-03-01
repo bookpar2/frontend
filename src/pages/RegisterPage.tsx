@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "../baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 import { majors } from "../constants/major";
 import { validateEmail } from "../utils/email";
+import useEmailVerificationStore from "../stores/useEmailVerificationStore";
+import type { AxiosError } from "axios";
+
+interface ApiErrorBody {
+  message?: string;
+}
+
+const getApiMessage = (error: unknown): string => {
+  const axiosError = error as AxiosError<ApiErrorBody>;
+  return axiosError.response?.data?.message || "요청 중 오류가 발생했습니다.";
+};
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -13,8 +24,24 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isCheckingCode, setIsCheckingCode] = useState(false);
+
+  const {
+    isSending,
+    isVerifying,
+    isEmailLocked,
+    isCodeLocked,
+    isVerified,
+    emailError,
+    codeError,
+    sendVerificationEmail,
+    verifyEmailCode,
+    reset,
+  } = useEmailVerificationStore();
+
+  // UI에서 쓰는 로딩 플래그 이름 유지
+  const isVerifyingEmail = isSending;
+  const isCheckingCode = isVerifying;
+
   const [errors, setErrors] = useState({
     name: "",
     studentId: "",
@@ -25,7 +52,11 @@ const RegisterPage = () => {
     verificationCode: "",
   });
 
-  // 이메일 인증 요청 (API 호출)
+  useEffect(() => {
+    return () => reset();
+  }, [reset]);
+
+  // 이메일 인증 요청
   const handleEmailVerification = async () => {
     const tempErrors = { ...errors };
 
@@ -35,29 +66,23 @@ const RegisterPage = () => {
       return;
     }
 
-    setIsVerifying(true); // 인증 요청 중 상태 변경
-
     try {
-      const response = await api.post("users/send-verification-email/", {
-        school_email: email,
-        verification_type: "registration",
-      });
+      const message = await sendVerificationEmail({ email, type: "registration" });
+      if (message) alert(message);
 
-      alert(response.data.message); // "인증 이메일이 발송되었습니다."
-      tempErrors.email = ""; // 오류 제거
-    } catch (error: any) {
-      console.error("이메일 인증 오류:", error.response?.data);
-      tempErrors.email =
-        error.response?.data?.message || "이메일 인증 요청 중 오류가 발생했습니다.";
-    } finally {
-      setIsVerifying(false); // 요청 완료 후 버튼 활성화
+      // store 에러/로컬 에러 동기화
+      tempErrors.email = "";
+      setErrors(tempErrors);
+    } catch (error: unknown) {
+      tempErrors.email = emailError || getApiMessage(error);
       setErrors(tempErrors);
     }
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    let tempErrors = {
+
+    const tempErrors = {
       name: "",
       studentId: "",
       major: "",
@@ -75,7 +100,8 @@ const RegisterPage = () => {
       tempErrors.email = "이메일 형식이 올바르지 않습니다 (@tukorea.ac.kr 도메인 사용)";
     if (password.length < 8) tempErrors.password = "비밀번호는 8자리 이상이어야 합니다.";
     if (password !== confirmPassword) tempErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-    if (!isCheckingCode)
+
+    if (!isVerified)
       tempErrors.verificationCode = "인증코드가 일치하지 않습니다. 다시 시도해 주세요.";
 
     setErrors(tempErrors);
@@ -85,7 +111,7 @@ const RegisterPage = () => {
     }
   };
 
-  // 인증 코드 확인 API 호출
+  // 인증 코드 확인 API 호출 
   const handleVerifyCode = async () => {
     const tempErrors = { ...errors };
 
@@ -95,29 +121,20 @@ const RegisterPage = () => {
       return;
     }
 
-    setIsCheckingCode(true); // 인증 코드 확인 중 상태 변경
-
     try {
-      const response = await api.post("users/verify-email-code/", {
-        school_email: email, // 기존 이메일 입력값 사용
-        verification_code: verificationCode,
-      });
+      const message = await verifyEmailCode({ email, code: verificationCode });
+      if (message) alert(message);
 
-      alert(response.data.message); // "인증 코드가 확인되었습니다."
-      setIsCheckingCode(true); // 인증 성공
-      setErrors({ ...tempErrors, verificationCode: "" }); // 오류 초기화
-    } catch (error: any) {
-      console.error("인증 코드 확인 오류:", error.response?.data);
-      tempErrors.verificationCode = "인증에 실패했습니다. 다시 입력해 주세요.";
-    } finally {
-      setIsCheckingCode(false); // 요청 완료 후 버튼 활성화
+      // store 에러/로컬 에러 동기화
+      setErrors({ ...tempErrors, verificationCode: "" });
+    } catch (error: unknown) {
+      tempErrors.verificationCode = codeError || "인증에 실패했습니다. 다시 입력해 주세요.";
       setErrors(tempErrors);
     }
   };
 
   // 회원가입 API
   const handleRegisterUser = async () => {
-    // 유효성 검사
     const tempErrors = { ...errors };
 
     if (!name) tempErrors.name = "이름을 입력해 주세요.";
@@ -128,9 +145,11 @@ const RegisterPage = () => {
     if (!password) tempErrors.password = "비밀번호를 입력해 주세요.";
     if (password !== confirmPassword) tempErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
 
+    // 인증 완료 전이면 회원가입 요청 막기
+    if (!isVerified) tempErrors.verificationCode = "이메일 인증을 완료해 주세요.";
+
     setErrors(tempErrors);
 
-    // 오류가 없으면 회원가입 요청
     if (Object.values(tempErrors).every((error) => error === "")) {
       try {
         await api.post("users/register/", {
@@ -141,13 +160,15 @@ const RegisterPage = () => {
           major: major,
           verification_code: verificationCode,
         });
+
         alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-        navigate("/login"); // 로그인 페이지로 이동
-      } catch (error: any) {
-        console.error("회원가입 오류:", error.response?.data);
+        navigate("/login");
+      } catch (error: unknown) {
+        console.error("회원가입 오류:", error);
+
         setErrors({
           ...errors,
-          email: error.response?.data?.message || "회원가입 중 오류가 발생했습니다.",
+          email: getApiMessage(error),
         });
       }
     }
@@ -243,18 +264,21 @@ const RegisterPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="학교 이메일을 입력해 주세요"
+              disabled={isEmailLocked}
               className={`w-4/5 p-3 border mr-2 ${errors.email ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
             />
             <button
               type="button"
               onClick={handleEmailVerification}
-              className={`w-1/5 text-white bg-primary hover:bg-primary/80 rounded-lg text-[10px] sm:text-xs ${isVerifying ? "cursor-none" : "cursor-pointer"}`}
-              disabled={isVerifying} // 요청 중일 때 버튼 비활성화
+              className={`w-1/5 text-white bg-primary hover:bg-primary/80 rounded-lg text-[10px] sm:text-xs ${isVerifyingEmail ? "cursor-none" : "cursor-pointer"}`}
+              disabled={isVerifyingEmail || isEmailLocked}
             >
-              {isVerifying ? "전송 중..." : "인증"}
+              {isVerifyingEmail ? "전송 중..." : "인증"}
             </button>
           </div>
-          {errors.email && <p className="text-alert text-xs mt-2">{errors.email}</p>}
+          {(errors.email || emailError) && (
+            <p className="text-alert text-xs mt-2">{errors.email || emailError}</p>
+          )}
         </div>
 
         {/* 인증코드 입력란 */}
@@ -272,13 +296,14 @@ const RegisterPage = () => {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
               placeholder="인증코드를 입력해 주세요"
+              disabled={isCodeLocked}
               className={`w-4/5 p-3 border mr-2 ${errors.verificationCode == "유효하지 않은 인증 코드입니다." ? "border-alert" : "border-gray-700"} rounded-lg focus:outline-none focus:border-primary text-[10px] sm:text-xs placeholder:text-gray-700`}
             />
             <button
               type="button"
               onClick={handleVerifyCode}
               className={`w-1/5 text-white bg-primary hover:bg-primary/80 rounded-lg text-[10px] sm:text-xs ${isCheckingCode ? "cursor-none" : "cursor-pointer"}`}
-              disabled={isCheckingCode} // 요청 중일 때 버튼 비활성화
+              disabled={isCheckingCode || isCodeLocked}
             >
               {isCheckingCode ? "전송 중..." : "확인"}
             </button>
@@ -286,7 +311,7 @@ const RegisterPage = () => {
           {errors.verificationCode == "유효하지 않은 인증 코드입니다." ? (
             <p className="text-alert text-xs mt-2">{errors.verificationCode}</p>
           ) : (
-            ""
+            codeError && <p className="text-alert text-xs mt-2">{codeError}</p>
           )}
         </div>
 

@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../baseURL/baseURL";
 import { validateEmail } from "../utils/email";
 import type { AxiosError } from "axios";
+import useEmailVerificationStore from "../stores/useEmailVerificationStore";
 
 // 비밀번호 재설정 페이지
+interface ApiErrorBody {
+  message?: string;
+}
+
+const getApiMessage = (error: unknown): string => {
+  const axiosError = error as AxiosError<ApiErrorBody>;
+  return axiosError.response?.data?.message || "요청 중 오류가 발생했습니다.";
+};
+
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -12,17 +22,23 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
 
-  // 이메일 인증 요청 로딩 상태
-  const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
-  // 인증 코드 확인 로딩 상태
-  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const {
+    isSending,
+    isVerifying,
+    isEmailLocked,
+    isCodeLocked,
+    isVerified,
+    emailError,
+    codeError,
+    sendVerificationEmail,
+    verifyEmailCode,
+    unlock,
+    reset,
+  } = useEmailVerificationStore();
 
-  // 이메일 입력/인증 잠금 상태
-  const [isEmailLocked, setIsEmailLocked] = useState(false);
-  // 인증코드 입력/확인 잠금 상태
-  const [isCodeLocked, setIsCodeLocked] = useState(false);
-  // 이메일+코드 인증 완료 여부(비밀번호 재설정 요청 허용)
-  const [isAuthVerified, setIsAuthVerified] = useState(false);
+  const isVerifyingEmail = isSending;
+  const isVerifyingCode = isVerifying;
+  const isAuthVerified = isVerified;
 
   const [errors, setErrors] = useState({
     email: "",
@@ -31,20 +47,12 @@ const ResetPasswordPage = () => {
     verificationCode: "",
   });
 
-  // axios 에러 메시지 추출 유틸
-  const getApiMessage = (error: unknown): string => {
-    const axiosError = error as AxiosError<{ message?: string }>;
-    return axiosError.response?.data?.message || "요청 중 오류가 발생했습니다.";
-  };
+  // 페이지 나가면 인증 상태 초기화
+  useEffect(() => {
+    return () => reset();
+  }, [reset]);
 
-  // 인증 입력/버튼 잠금 해제
-  const unlockAuth = () => {
-    setIsEmailLocked(false);
-    setIsCodeLocked(false);
-    setIsAuthVerified(false);
-  };
-
-  // 이메일 인증 요청 (API 호출)
+  // 이메일 인증 요청 (store)
   const handleEmailVerification = async () => {
     // 인증 완료 후에는 재요청 방지
     if (isEmailLocked) return;
@@ -57,25 +65,17 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    setIsVerifyingEmail(true); // 인증 요청 중 상태 변경
-
     try {
-      const response = await api.post("users/send-verification-email/", {
-        school_email: email,
-        verification_type: "password_reset",
-      });
+      const message = await sendVerificationEmail({ email, type: "password_reset" });
+      if (message) alert(message);
 
-      alert(response.data.message); // "인증 이메일이 발송되었습니다."
       setErrors({ ...tempErrors, email: "" });
     } catch (error: unknown) {
-      console.error("이메일 인증 오류:", error);
-      setErrors({ ...tempErrors, email: getApiMessage(error) });
-    } finally {
-      setIsVerifyingEmail(false); // 요청 완료 후 버튼 활성화
+      setErrors({ ...tempErrors, email: emailError || getApiMessage(error) });
     }
   };
 
-  // 인증 코드 확인 API 호출
+  // 인증 코드 확인
   const handleVerifyCode = async () => {
     // 인증 완료 후에는 재요청 방지
     if (isCodeLocked) return;
@@ -95,33 +95,21 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    setIsVerifyingCode(true); // 인증 코드 확인 중 상태 변경
-
     try {
-      const response = await api.post("users/verify-email-code/", {
-        school_email: email,
-        verification_code: verificationCode,
-      });
-
-      alert(response.data.message); // "인증 코드가 확인되었습니다."
-
-      // 인증 성공 시: 이메일/코드 입력과 버튼 잠금 + 인증 완료 플래그 on
-      setIsEmailLocked(true);
-      setIsCodeLocked(true);
-      setIsAuthVerified(true);
+      const message = await verifyEmailCode({ email, code: verificationCode });
+      if (message) alert(message);
 
       setErrors({ ...tempErrors, verificationCode: "" });
     } catch (error: unknown) {
-      console.error("인증 코드 확인 오류:", error);
-      setErrors({ ...tempErrors, verificationCode: "인증에 실패했습니다. 다시 입력해 주세요." });
-    } finally {
-      setIsVerifyingCode(false); // 요청 완료 후 버튼 활성화
+      setErrors({
+        ...tempErrors,
+        verificationCode: codeError || "인증에 실패했습니다. 다시 입력해 주세요.",
+      });
     }
   };
 
   // 비밀번호 재설정 API
   const submitResetPassword = async () => {
-    // 유효성 검사
     const tempErrors = { ...errors };
 
     if (!validateEmail(email)) tempErrors.email = "학교 이메일 형식이 올바르지 않습니다.";
@@ -130,14 +118,12 @@ const ResetPasswordPage = () => {
     if (password.length < 8) tempErrors.password = "비밀번호는 8자리 이상이어야 합니다.";
     if (password !== confirmPassword) tempErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
 
-    // 인증이 완료되지 않았으면 재설정 요청 자체를 막기
     if (!isAuthVerified) {
       tempErrors.verificationCode = "이메일 인증을 완료해 주세요.";
     }
 
     setErrors(tempErrors);
 
-    // 오류가 없으면 비밀번호 재설정 요청
     if (Object.values(tempErrors).every((error) => error === "")) {
       try {
         await api.post("users/password-reset-confirm/", {
@@ -152,7 +138,7 @@ const ResetPasswordPage = () => {
         console.error("비밀번호 재설정 오류:", error);
 
         // 재설정 실패 시에만 다시 인증 가능하도록 잠금 해제
-        unlockAuth();
+        unlock();
 
         setErrors({
           ...errors,
@@ -203,7 +189,9 @@ const ResetPasswordPage = () => {
               {isVerifyingEmail ? "전송 중..." : isEmailLocked ? "완료" : "인증"}
             </button>
           </div>
-          {errors.email && <p className="text-alert text-xs mt-2">{errors.email}</p>}
+          {(errors.email || emailError) && (
+            <p className="text-alert text-xs mt-2">{errors.email || emailError}</p>
+          )}
         </div>
 
         {/* 인증코드 입력란 */}
@@ -237,8 +225,8 @@ const ResetPasswordPage = () => {
               {isVerifyingCode ? "확인 중..." : isCodeLocked ? "완료" : "확인"}
             </button>
           </div>
-          {errors.verificationCode && (
-            <p className="text-alert text-xs mt-2">{errors.verificationCode}</p>
+          {(errors.verificationCode || codeError) && (
+            <p className="text-alert text-xs mt-2">{errors.verificationCode || codeError}</p>
           )}
         </div>
 
