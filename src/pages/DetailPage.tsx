@@ -71,7 +71,7 @@ const DetailPage = () => {
         >
           <img
             src={images[currentImageIndex]}
-            className="w-full object-contain rounded-lg"
+            className="w-full h-full object-contain rounded-lg"
             alt="Book Image"
           />
           {/* 좌우 화살표 버튼 */}
