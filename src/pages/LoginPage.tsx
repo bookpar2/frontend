@@ -125,6 +125,10 @@ const LoginPage = () => {
           회원가입
         </a>
       </p>
+
+      <p className="font-medium text-center text-xs text-gray-700 pt-3">
+        비밀번호 변경 문의는 인스타그램 @27th_curve로 DM주세요
+      </p>
     </div>
   );
 };

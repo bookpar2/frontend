@@ -85,6 +85,9 @@ const MyPage = () => {
             <div>{userInfo.school_email}</div>
           </article>
         </section>
+        <p className="font-medium text-center text-xs text-gray-700 pt-3">
+          탈퇴 문의는 인스타그램 @27th_curve로 DM주세요
+        </p>
       </div>
 
       {/* 사용자가 등록한 서적 목록 */}
