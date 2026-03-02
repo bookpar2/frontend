@@ -22,8 +22,6 @@ const SellPage = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const isEditMode = location.pathname.startsWith("/edit/");
-
   const { currentBook, fetchBook } = useBookStore();
 
   const saleStatuses = [
@@ -65,6 +63,16 @@ const SellPage = () => {
     setUploadedImageUrls((prev) => [...prev, ...newFileUrls].slice(0, 3));
   };
 
+  const urlToFile = async (url: string) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    const fileName = url.split("/").pop() ?? `image-${Date.now()}.jpg`;
+    const contentType = blob.type || "image/jpeg";
+
+    return new File([blob], fileName, { type: contentType });
+  };
+
   // 서적 등록 API 요청
   const handleSubmit = async () => {
     if (!title || !chatLink || !price || !major || !description) {
@@ -97,6 +105,7 @@ const SellPage = () => {
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       };
 
@@ -160,10 +169,18 @@ const SellPage = () => {
     setStatus(currentBook.status);
     setDescription(currentBook.description);
 
-    if (Array.isArray(currentBook.images)) {
+    (async () => {
+      if (!Array.isArray(currentBook.images)) return;
+
       const urls = currentBook.images.map((img) => img.image_url);
       setUploadedImageUrls(urls);
-    }
+      
+      if (imageFiles.length === 0) {
+        const files = await Promise.all(urls.map(urlToFile));
+        setImageFiles(files);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentBook]);
 
   // 이미지 삭제 핸들러
@@ -194,14 +211,12 @@ const SellPage = () => {
           <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
             사진 (최소 1장, 최대 3장)
           </label>
-          {!isEditMode && (
-            <button
-              className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
-              onClick={handleResetImages}
-            >
-              RESET
-            </button>
-          )}
+          <button
+            className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
+            onClick={handleResetImages}
+          >
+            RESET
+          </button>
         </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
@@ -213,7 +228,7 @@ const SellPage = () => {
               />
             </div>
           ))}
-          {!isEditMode && uploadedImageUrls.length < 3 && (
+          {uploadedImageUrls.length < 3 && (
             <label className="w-14 h-14 flex flex-col items-center justify-center rounded-lg cursor-pointer bg-gray-100">
               <Upload className="w-5 h-5 text-gray-600" />
               <input
