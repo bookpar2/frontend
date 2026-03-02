@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
 import heic2any from "heic2any";
 import { majors } from "../constants/major";
+import useBookStore from "../stores/useBookStore";
 
 const SellPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { book_id } = useParams<{ book_id?: string }>();
   const { fetchBooks } = usePostsStore();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -21,7 +21,7 @@ const SellPage = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const isEditMode = location.pathname.startsWith("/edit/");
+  const { currentBook, fetchBook } = useBookStore();
 
   const saleStatuses = [
     { value: "FOR_SALE", label: "판매 중" },
@@ -69,7 +69,7 @@ const SellPage = () => {
       return;
     }
 
-    if (uploadedImageUrls.length === 0 && imageFiles.length === 0) {
+    if (imageFiles.length === 0) {
       alert("최소 1개의 이미지를 업로드해야 합니다.");
       return;
     }
@@ -85,35 +85,27 @@ const SellPage = () => {
       formData.append("price", String(price));
       formData.append("description", description);
       formData.append("major", major);
-      formData.append("status", String(status));
+      formData.append("status", status);
 
-      // 파일 배열 전송 (images[])
       imageFiles.forEach((file) => {
-        formData.append("images", file); // 배열 형식으로 전송
+        formData.append("images", file, file.name);
       });
 
-      console.log("전송할 FormData:", [...formData.entries()]);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
       if (book_id) {
-        await api.patch(`books/${book_id}/`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await api.patch(`books/${book_id}/`, formData, config);
         alert("서적 정보가 성공적으로 수정되었습니다.");
-        navigate("/");
       } else {
-        await api.post("books/", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await api.post("books/", formData, config);
         alert("서적이 성공적으로 등록되었습니다.");
-        navigate("/");
       }
 
+      navigate("/");
       await fetchBooks();
     } catch (error) {
       console.error("서적 등록/수정 오류:", error);
@@ -140,7 +132,7 @@ const SellPage = () => {
 
   // 카카오톡 오픈채팅 유효성 검사
   const handleChatLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChatLink(e.target.value); // 그냥 입력 허용
+    setChatLink(e.target.value);
   };
 
   const validateChatLink = () => {
@@ -150,72 +142,32 @@ const SellPage = () => {
     }
   };
 
-  // book_id 변경 시 기존 데이터 불러오기 (수정 모드)
   useEffect(() => {
     if (!book_id) return;
-    setLoading(true);
-
-    const fetchBookData = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-          alert("로그인이 필요합니다.");
-          navigate("/login"); // 로그인 페이지로 리디렉션
-          return;
-        }
-
-        const response = await api.get(`books/${book_id}/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const bookData = response.data;
-
-        setTitle(bookData.title);
-        setChatLink(bookData.chatLink);
-        setPrice(bookData.price);
-        setMajor(bookData.major);
-        setStatus(bookData.status);
-        setDescription(bookData.description);
-
-        if (Array.isArray(bookData.images)) {
-          setUploadedImageUrls(bookData.images.map((img: any) => img.image_url));
-        } else {
-          setUploadedImageUrls([]);
-        }
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          console.error("인증 오류:", error.response.data);
-          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-          localStorage.removeItem("accessToken"); // 토큰 삭제
-          navigate("/login"); // 로그인 페이지로 이동
-        } else {
-          console.error("서적 정보 불러오기 오류:", error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookData();
+    fetchBook(book_id);
   }, [book_id]);
+
+  useEffect(() => {
+    if (!currentBook) return;
+
+    setTitle(currentBook.title);
+    setChatLink(currentBook.chatLink);
+    setPrice(currentBook.price);
+    setMajor(currentBook.major);
+    setStatus(currentBook.status);
+    setDescription(currentBook.description);
+
+    if (Array.isArray(currentBook.images)) {
+      const urls = currentBook.images.map((img) => img.image_url);
+      setUploadedImageUrls(urls);
+    }
+  }, [currentBook]);
 
   // 이미지 삭제 핸들러
   const handleResetImages = () => {
     setUploadedImageUrls([]);
     setImageFiles([]);
   };
-
-  useEffect(() => {
-    setImageFiles([]);
-    setUploadedImageUrls([]);
-    setTitle("");
-    setChatLink("");
-    setPrice(0);
-    setMajor("");
-    setStatus("FOR_SALE");
-    setDescription("");
-    setLoading(false);
-  }, [location]);
 
   return (
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-10">
@@ -225,14 +177,12 @@ const SellPage = () => {
           <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
             사진 (최소 1장, 최대 3장)
           </label>
-          {!isEditMode && (
-            <button
-              className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
-              onClick={handleResetImages}
-            >
-              RESET
-            </button>
-          )}
+          <button
+            className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
+            onClick={handleResetImages}
+          >
+            RESET
+          </button>
         </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
@@ -244,7 +194,7 @@ const SellPage = () => {
               />
             </div>
           ))}
-          {!isEditMode && uploadedImageUrls.length < 3 && (
+          {uploadedImageUrls.length < 3 && (
             <label className="w-14 h-14 flex flex-col items-center justify-center rounded-lg cursor-pointer bg-gray-100">
               <Upload className="w-5 h-5 text-gray-600" />
               <input
@@ -329,7 +279,7 @@ const SellPage = () => {
       {/* 상태 선택 */}
       {book_id && (
         <div className="mb-4">
-          <label className="block text-gray-900 pb-1 pl-1">판매 상태</label>
+          <label className="block text-gray-900 pb-1 pl-1 text-[10px] sm:text-sm">판매 상태</label>
           <div className="relative">
             <select
               value={status}
@@ -348,7 +298,7 @@ const SellPage = () => {
             <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 text-gray-600"
+                className="w-5 h-5 text-gray-800"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -403,6 +353,6 @@ const SellPage = () => {
       </button>
     </div>
   );
-};
+};;
 
 export default SellPage;
