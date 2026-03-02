@@ -22,6 +22,8 @@ const SellPage = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const isEditMode = location.pathname.startsWith("/edit/");
+
   const { currentBook, fetchBook } = useBookStore();
 
   const saleStatuses = [
@@ -192,12 +194,14 @@ const SellPage = () => {
           <label className="block text-[10px] sm:text-sm font-medium pl-1 pb-1">
             사진 (최소 1장, 최대 3장)
           </label>
-          <button
-            className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
-            onClick={handleResetImages}
-          >
-            RESET
-          </button>
+          {!isEditMode && (
+            <button
+              className="rounded-lg bg-alert text-white px-2 text-xs cursor-pointer"
+              onClick={handleResetImages}
+            >
+              RESET
+            </button>
+          )}
         </div>
         <div className="flex gap-2">
           {uploadedImageUrls.map((src, index) => (
@@ -209,7 +213,7 @@ const SellPage = () => {
               />
             </div>
           ))}
-          {uploadedImageUrls.length < 3 && (
+          {!isEditMode && uploadedImageUrls.length < 3 && (
             <label className="w-14 h-14 flex flex-col items-center justify-center rounded-lg cursor-pointer bg-gray-100">
               <Upload className="w-5 h-5 text-gray-600" />
               <input
