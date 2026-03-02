@@ -1,44 +1,69 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import usePostsStore from "../stores/usePostsStore";
 import SalesStatus from "../components/SalesStatus";
 import useUserStore from "../stores/useUserStore";
 import api from "../baseURL/baseURL";
 import { useSwipeable } from "react-swipeable";
+import { Book } from "../dataType";
 
 const DetailPage = () => {
   const navigate = useNavigate();
   const { book_id } = useParams<{ book_id: string }>();
-  const { books, fetchBooks } = usePostsStore();
   const { id } = useUserStore();
-  const book = books.find((b) => b.book_id === Number(book_id));
 
-  // 이미지 슬라이드 상태 관리
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchBookDetail = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`books/${book_id}/`);
+        setBook(response.data);
+        setCurrentImageIndex(0);
+      } catch (error) {
+        console.error("상세 조회 실패:", error);
+        setBook(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (book_id) fetchBookDetail();
+  }, [book_id]);
+
+  const images = useMemo(() => {
+    const urls =
+      book?.images && book.images.length > 0
+        ? book.images.map((img: any) => img.image_url)
+        : ["/images/default-book.png"];
+    return urls.length > 0 ? urls : ["/images/default-book.png"];
+  }, [book]);
+
+  const prevImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  }, [images.length]);
+
+  const nextImage = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  }, [images.length]);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: nextImage,
+    onSwipedRight: prevImage,
+    trackMouse: true,
+  });
+
+  if (loading) {
+    return <p className="text-center text-gray-500">불러오는 중...</p>;
+  }
 
   if (!book) {
     return <p className="text-center text-gray-500">책 정보를 찾을 수 없습니다.</p>;
   }
 
-  const images = book.images.length > 0 ? book.images : ["/images/default-book.png"];
-
-  // 이전 이미지
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
-  };
-
-  // 다음 이미지
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
-  };
-
-  // 스와이프 감지 이벤트 핸들러
-  const handlers = useSwipeable({
-    onSwipedLeft: nextImage,
-    onSwipedRight: prevImage,
-  });
-
-  // 서적 삭제 API 호출
+  // 책 삭제 API
   const handleDelete = async () => {
     const confirmDelete = window.confirm("정말 이 서적을 삭제하시겠습니까?");
     if (!confirmDelete) return;
@@ -46,15 +71,11 @@ const DetailPage = () => {
     try {
       const token = localStorage.getItem("accessToken");
       await api.delete(`books/${book_id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       alert("서적이 성공적으로 삭제되었습니다.");
-      navigate("/"); // 메인 페이지로 이동
-      await fetchBooks(); // 삭제 후 목록 갱신
+      navigate("/");
     } catch (error) {
       console.error("서적 삭제 오류:", error);
       alert("서적 삭제 중 오류가 발생했습니다.");
@@ -72,27 +93,27 @@ const DetailPage = () => {
           <img
             src={images[currentImageIndex]}
             className="w-full h-full object-contain rounded-lg"
-            alt="Book Image"
+            alt="Book"
           />
-          {/* 좌우 화살표 버튼 */}
+
           {images.length > 1 && (
             <>
               <button
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-md"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-md"
                 onClick={prevImage}
               >
                 ◀
               </button>
               <button
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-md"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white px-2 py-1 rounded-md"
                 onClick={nextImage}
               >
                 ▶
               </button>
             </>
           )}
-          {/* 이미지 인덱스 표시 */}
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm px-3 py-1 rounded-md">
+
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm px-3 py-1 rounded-md">
             {currentImageIndex + 1} / {images.length}
           </div>
         </div>
@@ -103,9 +124,10 @@ const DetailPage = () => {
             <img src="/images/person.svg" alt="User" className="w-8 h-8 ml-2" />
             <span className="text-gray-900 font-medium">{book.seller_name}</span>
           </div>
+
           {book.seller === id && (
             <button
-              className="mr-2 px-3 py-1 text-sm text-white bg-alert rounded-md cursor-pointer"
+              className="mr-2 px-3 py-1 text-sm text-white bg-alert rounded-md"
               onClick={handleDelete}
             >
               삭제하기
@@ -122,10 +144,10 @@ const DetailPage = () => {
         </div>
       </div>
 
-      {/* 수정하기 / 판매자와 채팅하기 버튼 */}
+      {/* 버튼 */}
       {book.seller === id ? (
         <button
-          className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3 hover:bg-primary hover:text-white cursor-pointer"
+          className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3"
           onClick={() => navigate(`/edit/${book.book_id}`)}
         >
           수정하기
@@ -133,7 +155,7 @@ const DetailPage = () => {
       ) : (
         book.saleStatus !== "COMPLETED" && (
           <button
-            className="w-full bg-primary text-white py-3 rounded-full hover:bg-primary/80"
+            className="w-full bg-primary text-white py-3 rounded-full"
             onClick={() => window.open(book.chatLink, "_blank")}
           >
             판매자와 채팅하기
