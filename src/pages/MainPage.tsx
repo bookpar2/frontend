@@ -26,9 +26,9 @@ const MainPage = () => {
           <p className="text-red-500 mt-2">{error}</p>
         ) : books.length > 0 ? (
           <div className="px-3 my-0 mt-2 grid w-full max-w-[1024px] grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-6 text-left justify-items-center">
-            {books.map((book) => (
+            {books.map((book, idx) => (
               <PostCard
-                key={book.book_id}
+                key={idx}
                 book_id={book.book_id}
                 title={book.title}
                 price={book.price}

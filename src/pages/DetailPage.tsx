@@ -137,7 +137,7 @@ const DetailPage = () => {
 
         {/* 서적 정보 */}
         <div className="p-4 rounded-lg">
-          <SalesStatus saleStatus={book.saleStatus} />
+          <SalesStatus saleStatus={book.status} />
           <h3 className="text-lg font-semibold mt-2">{book.title}</h3>
           <p className="text-gray-700 text-lg mb-6">{book.price.toLocaleString()}원</p>
           <p className="min-h-40 text-sm text-gray-900 mt-2">{book.description}</p>
@@ -148,12 +148,12 @@ const DetailPage = () => {
       {book.seller === id ? (
         <button
           className="w-full bg-white border border-primary text-primary py-3 rounded-full mt-3"
-          onClick={() => navigate(`/edit/${book.book_id}`)}
+          onClick={() => navigate(`/edit/${book_id}`)}
         >
           수정하기
         </button>
       ) : (
-        book.saleStatus !== "COMPLETED" && (
+        book.status !== "COMPLETED" && (
           <button
             className="w-full bg-primary text-white py-3 rounded-full"
             onClick={() => window.open(book.chatLink, "_blank")}

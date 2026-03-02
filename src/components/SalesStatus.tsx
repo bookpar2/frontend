@@ -3,7 +3,7 @@ import { SalesStatusProps } from "../dataType";
 const SalesStatus = (props: SalesStatusProps) => {
   return (
     <div
-      className={`w-fit text-xs py-1 font-semibold rounded-sm inline-block select-none ${props.saleStatus !== "COMPLETED" ? "bg-primary text-white px-3" : "bg-white text-primary border border-primary px-2"}`}
+      className={`w-fit text-xs py-1 font-semibold rounded-sm inline-block select-none ${props.saleStatus === "COMPLETED" ? "bg-white text-primary border border-primary px-2" : "bg-primary text-white px-3"}`}
     >
       {props.saleStatus === "FOR_SALE"
         ? "판매중"

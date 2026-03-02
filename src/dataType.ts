@@ -3,6 +3,7 @@ export interface Book {
   images: string[]; // 여러 개의 이미지 배열 유지
   title: string;
   price: number;
+  status: string;
   saleStatus: string;
   description: string;
   seller: string;
