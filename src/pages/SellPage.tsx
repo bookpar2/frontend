@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../baseURL/baseURL";
 import usePostsStore from "../stores/usePostsStore";
 import heic2any from "heic2any";
@@ -9,6 +9,7 @@ import useBookStore from "../stores/useBookStore";
 
 const SellPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { book_id } = useParams<{ book_id?: string }>();
   const { fetchBooks } = usePostsStore();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -168,6 +169,20 @@ const SellPage = () => {
     setUploadedImageUrls([]);
     setImageFiles([]);
   };
+
+  useEffect(() => {
+    if (location.pathname !== "/sell") return;
+
+    setImageFiles([]);
+    setUploadedImageUrls([]);
+    setTitle("");
+    setChatLink("");
+    setPrice(0);
+    setMajor("");
+    setStatus("FOR_SALE");
+    setDescription("");
+    setLoading(false);
+  }, [location.pathname]);
 
   return (
     <div className="max-w-md mx-auto px-8 pb-8 space-y-4 pt-10">
