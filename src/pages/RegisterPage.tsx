@@ -107,7 +107,7 @@ const RegisterPage = () => {
     setErrors(tempErrors);
 
     if (Object.values(tempErrors).every((error) => error === "")) {
-      alert("회원가입 성공!");
+      alert("회원가입 성공! 로그인 페이지로 이동합니다.");
     }
   };
 
@@ -161,7 +161,6 @@ const RegisterPage = () => {
           verification_code: verificationCode,
         });
 
-        alert("회원가입 성공! 로그인 페이지로 이동합니다.");
         navigate("/login");
       } catch (error: unknown) {
         console.error("회원가입 오류:", error);
